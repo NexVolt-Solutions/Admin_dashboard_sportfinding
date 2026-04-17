@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Poppins:wght@600&display=swap');
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Poppins", sans-serif;
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --color-background: #F8FAFC;
+  --color-foreground: #111827;
+
+  --color-card: #FFFFFF;
+  --color-card-foreground: #111827;
+
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #111827;
+
+  --color-primary: #3EA7FD;
+  --color-primary-foreground: #FFFFFF;
+
+  --color-darkText: #111827;
+  --color-sidebarText: #64748B;
+
+  --color-secondary: #F8FAFC;
+  --color-secondary-foreground: #111827;
+
+  --color-muted: #F8FAFC;
+  --color-muted-foreground: #64748B;
+
+  --color-accent: #F8FAFC;
+  --color-accent-foreground: #111827;
+
+  --color-destructive: #EF4444;
+  --color-destructive-foreground: #f8fafc;
+
+  --color-border: #E5E7EB;
+  --color-input: #E5E7EB;
+  --color-ring: #3EA7FD;
+
+  --color-chart-1: #3EA7FD;
+  --color-chart-2: #60a5fa;
+  --color-chart-3: #93c5fd;
+  --color-chart-4: #bfdbfe;
+  --color-chart-5: #dbeafe;
+
+  --radius-xl: 12px;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
