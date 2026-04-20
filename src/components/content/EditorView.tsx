@@ -48,11 +48,16 @@ export default function EditorView({ title, content, onChange, searchQuery }: Ed
   }, [searchQuery, content]);
 
   return (
-    <div className="space-y-10">
-      <h2 className="text-[24px] font-sans font-bold text-[#0F172A]">
-        {title}
-      </h2>
-      
+    <div className="space-y-6">
+      <div className="space-y-1">
+        <h2 className="text-[24px] font-sans font-bold text-[#0F172A]">
+          {title}
+        </h2>
+        <p className="text-[13px] text-slate-400 font-sans">
+          Markdown supported: <code className="text-slate-500">## Heading</code>, <code className="text-slate-500">- bullet</code>, <code className="text-slate-500">**bold**</code>
+        </p>
+      </div>
+
       <textarea
         ref={textareaRef}
         value={content}

@@ -11,6 +11,7 @@ import MainLayout from "./components/layout/MainLayout";
 import AuthGuard from "./components/auth/AuthGuard";
 
 const Login = lazy(() => import("./pages/Login"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Users = lazy(() => import("./pages/Users"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
@@ -47,6 +48,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <Login />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/auth-callback"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AuthCallback />
             </Suspense>
           }
         />
