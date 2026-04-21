@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { User, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -7,59 +7,70 @@ import SecurityForm from "@/components/settings/SecurityForm";
 
 type SettingsTab = "profile" | "account";
 
+const tabs: { id: SettingsTab; label: string; icon: typeof User; description: string }[] = [
+  { id: "profile", label: "Profile", icon: User, description: "Your personal details" },
+  { id: "account", label: "Security", icon: Lock, description: "Password & credentials" },
+];
+
 export default function Settings() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
 
-  const tabs = [
-    { id: "profile", label: "Profile", icon: User },
-    { id: "account", label: "Account", icon: Lock },
-  ];
-
   return (
-    <div className="h-full flex flex-col space-y-6">
-      <header>
-        <h1 className="text-[32px] font-sans font-bold text-[#0F172A] leading-tight">Settings</h1>
+    <div className="space-y-8">
+      <header className="flex flex-col gap-1">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Settings
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Manage your account, security and preferences
+        </p>
       </header>
 
-      <div className="flex-1 bg-white rounded-[24px] overflow-hidden flex flex-col md:flex-row">
-        {/* Vertical Tab Navigation */}
-        <aside className="w-full md:w-[280px] p-6 space-y-4">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[240px_1fr]">
+        <aside className="flex flex-col gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as SettingsTab)}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all font-sans font-bold text-[15px]",
+                  "group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-[#60A5FA] text-white shadow-lg shadow-blue-100"
-                    : "text-slate-400 hover:bg-slate-50 hover:text-[#0F172A]"
+                    ? "bg-primary-muted text-primary"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
-                <Icon className={cn("w-5 h-5", isActive ? "stroke-[2.5px]" : "stroke-[2px]")} />
-                <span>{tab.label}</span>
+                <Icon
+                  className={cn(
+                    "h-4.5 w-4.5 shrink-0",
+                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                  )}
+                  strokeWidth={isActive ? 2.25 : 2}
+                />
+                <div className="flex min-w-0 flex-col">
+                  <span className="truncate">{tab.label}</span>
+                </div>
               </button>
             );
           })}
         </aside>
 
-        {/* Dynamic Form Content */}
-        <main className="flex-1 p-8 md:p-10 relative overflow-y-auto">
+        <section className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
             >
               {activeTab === "profile" ? <ProfileForm /> : <SecurityForm />}
             </motion.div>
           </AnimatePresence>
-        </main>
+        </section>
       </div>
     </div>
   );

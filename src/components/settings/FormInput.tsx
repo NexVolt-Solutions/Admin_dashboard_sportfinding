@@ -14,6 +14,9 @@ interface FormInputProps {
   disabled?: boolean;
 }
 
+const baseField =
+  "w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground shadow-xs outline-none transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-muted-foreground hover:border-input/80 focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/30 disabled:cursor-not-allowed disabled:bg-muted/50 disabled:opacity-60";
+
 const FormInput = React.memo(({
   label,
   type = "text",
@@ -26,40 +29,45 @@ const FormInput = React.memo(({
   className,
   disabled = false,
 }: FormInputProps) => {
-  const inputClasses = cn(
-    "w-full px-5 py-4 rounded-xl border border-slate-200 bg-[#F8FAFC] font-sans text-[15px] font-medium text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-[#60A5FA] transition-all",
-    error ? "border-rose-500" : "border-slate-200",
-    isTextArea ? "min-h-[140px] resize-none leading-relaxed" : "h-14",
-    disabled && "opacity-60 cursor-not-allowed bg-slate-50"
+  const fieldClasses = cn(
+    baseField,
+    isTextArea ? "min-h-35 resize-none py-2.5 leading-relaxed" : "h-10 py-2",
+    error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
   );
 
   return (
-    <div className={cn("space-y-3", className)}>
-      <label className="block font-sans font-medium text-[14px] text-slate-400">
+    <div className={cn("space-y-1.5", className)}>
+      <label
+        htmlFor={name}
+        className="block text-xs font-medium text-muted-foreground"
+      >
         {label}
       </label>
       {isTextArea ? (
         <textarea
+          id={name}
           name={name}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={inputClasses}
+          className={fieldClasses}
           disabled={disabled}
         />
       ) : (
         <input
+          id={name}
           type={type}
           name={name}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className={inputClasses}
+          className={fieldClasses}
           disabled={disabled}
+          autoComplete="off"
         />
       )}
       {error && (
-        <p className="text-xs text-destructive font-sans">{error}</p>
+        <p className="text-xs font-medium text-destructive">{error}</p>
       )}
     </div>
   );

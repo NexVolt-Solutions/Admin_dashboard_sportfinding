@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { useForm } from "@/hooks/useForm";
 import FormInput from "./FormInput";
 import apiClient from "@/lib/api-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const initialData = {
   currentPassword: "",
@@ -56,72 +56,78 @@ export default function SecurityForm() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      <div className="flex items-center justify-between">
-        <h3 className="text-[22px] font-sans font-bold text-[#0F172A]">Security & Credentials</h3>
-        <button
+    <div className="space-y-8">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h3 className="font-heading text-lg font-semibold tracking-tight text-foreground">
+            Security & credentials
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Update the password used to sign in to the admin dashboard.
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant={isEditing ? "secondary" : "outline"}
           onClick={() => {
             if (isEditing) setValues(initialData);
             setIsEditing(!isEditing);
           }}
-          className={cn(
-            "px-8 h-12 rounded-xl font-sans font-bold text-[15px] border transition-all",
-            isEditing
-              ? "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200"
-              : "border-[#60A5FA] text-[#60A5FA] hover:bg-blue-50"
-          )}
         >
-          {isEditing ? "Cancel" : "Edit Security"}
-        </button>
+          {isEditing ? "Cancel" : "Edit"}
+        </Button>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         <FormInput
-          label="Current Password"
+          label="Current password"
           type="password"
           name="currentPassword"
           value={values.currentPassword}
           onChange={handleChange}
-          placeholder="********"
+          placeholder="••••••••"
           disabled={!isEditing}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <FormInput
-            label="New Password"
+            label="New password"
             type="password"
             name="newPassword"
             value={values.newPassword}
             onChange={handleChange}
             error={errors.newPassword}
-            placeholder="********"
+            placeholder="At least 8 characters"
             disabled={!isEditing}
           />
           <FormInput
-            label="Confirm Password"
+            label="Confirm new password"
             type="password"
             name="confirmPassword"
             value={values.confirmPassword}
             onChange={handleChange}
             error={errors.confirmPassword}
-            placeholder="********"
+            placeholder="Re-enter new password"
             disabled={!isEditing}
           />
         </div>
 
-        <div className="flex justify-end pt-4">
-          <button
+        <div className="flex justify-end border-t border-border pt-5">
+          <Button
+            type="button"
+            size="lg"
             onClick={() => handleSubmit(onSave)}
             disabled={!isEditing || !isDirty || isSaving}
-            className={cn(
-              "px-10 py-3 rounded-xl font-sans font-bold text-[16px] text-white transition-all shadow-lg",
-              (!isEditing || !isDirty || isSaving)
-                ? "bg-[#60A5FA]/50 cursor-not-allowed shadow-none"
-                : "bg-[#60A5FA] hover:bg-blue-500 active:scale-[0.98] shadow-blue-100"
-            )}
           >
-            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
-          </button>
+            {isSaving ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Saving…
+              </>
+            ) : (
+              "Save changes"
+            )}
+          </Button>
         </div>
       </div>
     </div>

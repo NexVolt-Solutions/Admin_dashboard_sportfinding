@@ -40,13 +40,13 @@ export default function AuthCallback() {
     const { accessToken, refreshToken } = readTokensFromHash();
 
     if (!accessToken) {
-      redirectToLogin("Missing access token. Redirecting...", 1200);
+      redirectToLogin("Missing access token. Redirecting…", 1200);
     } else {
       verifyAdmin(accessToken, controller.signal)
         .then((isAdmin) => {
           if (controller.signal.aborted) return;
           if (!isAdmin) {
-            redirectToLogin("This account doesn't have admin access. Redirecting...");
+            redirectToLogin("This account doesn't have admin access. Redirecting…");
             return;
           }
           login(accessToken, refreshToken);
@@ -55,7 +55,7 @@ export default function AuthCallback() {
         })
         .catch(() => {
           if (controller.signal.aborted) return;
-          redirectToLogin("Could not verify your session. Redirecting...");
+          redirectToLogin("Could not verify your session. Redirecting…");
         });
     }
 
@@ -66,11 +66,11 @@ export default function AuthCallback() {
   }, [login, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
-      <div className="text-center space-y-3 max-w-sm px-4">
-        <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto" />
-        <p className="text-slate-500 font-sans font-medium">
-          {error ?? "Signing you in..."}
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="flex flex-col items-center gap-3 text-center max-w-sm">
+        <Loader2 className="h-6 w-6 text-primary animate-spin" />
+        <p className="text-sm text-muted-foreground">
+          {error ?? "Signing you in…"}
         </p>
       </div>
     </div>
