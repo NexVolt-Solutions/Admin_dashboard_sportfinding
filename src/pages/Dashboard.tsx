@@ -6,12 +6,19 @@ import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
 import type { DashboardStats } from "@/types/dashboard";
 
-// Lazy load heavy chart components
-const UserActivityChart = lazy(() => import("@/components/dashboard/UserActivityChart"));
-const MatchesPerDayChart = lazy(() => import("@/components/dashboard/MatchesPerDayChart"));
-const PopularSportsChart = lazy(() => import("@/components/dashboard/PopularSportsChart"));
+const UserActivityChart = lazy(
+  () => import("@/components/dashboard/UserActivityChart")
+);
+const MatchesPerDayChart = lazy(
+  () => import("@/components/dashboard/MatchesPerDayChart")
+);
+const PopularSportsChart = lazy(
+  () => import("@/components/dashboard/PopularSportsChart")
+);
 
-const ChartSkeleton = () => <Skeleton className="h-[350px] w-full rounded-xl" />;
+const ChartSkeleton = ({ className = "" }: { className?: string }) => (
+  <Skeleton className={`h-96 w-full rounded-xl ${className}`} />
+);
 
 const Dashboard = () => {
   const { data: stats, isLoading } = useQuery<DashboardStats>({
@@ -23,47 +30,55 @@ const Dashboard = () => {
   });
 
   return (
-    <main className="space-y-5">
-      <header className="mb-6">
-        <h1 className="text-3xl font-sans font-bold text-[#0F172A] mb-1 tracking-tight">Dashboard</h1>
-        <p className="text-slate-500 font-sans font-medium">Platform overview and analytics</p>
+    <div className="space-y-8">
+      <header className="flex flex-col gap-1">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Dashboard
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Platform overview and analytics
+        </p>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {isLoading && !stats ? (
-          <>
-            {[1, 2, 3, 4].map((i) => (
+      <section
+        aria-label="Key metrics"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+      >
+        {isLoading && !stats
+          ? [0, 1, 2, 3].map((i) => (
               <Skeleton key={i} className="h-32 w-full rounded-xl" />
-            ))}
-          </>
-        ) : (
-          <>
-            <StatCard
-              icon={Users}
-              label="Total Users"
-              value={stats?.total_users.toLocaleString() || "0"}
-            />
-            <StatCard
-              icon={Trophy}
-              label="Total Matches"
-              value={stats?.total_matches.toLocaleString() || "0"}
-            />
-            <StatCard
-              icon={Zap}
-              label="Active Matches"
-              value={stats?.active_matches.toLocaleString() || "0"}
-            />
-            <StatCard
-              icon={UserPlus}
-              label="New Users Today"
-              value={stats?.new_users_today.toLocaleString() || "0"}
-            />
-          </>
-        )}
+            ))
+          : (
+              <>
+                <StatCard
+                  icon={Users}
+                  label="Total Users"
+                  value={stats?.total_users.toLocaleString() || "0"}
+                />
+                <StatCard
+                  icon={Trophy}
+                  label="Total Matches"
+                  value={stats?.total_matches.toLocaleString() || "0"}
+                />
+                <StatCard
+                  icon={Zap}
+                  label="Active Matches"
+                  value={stats?.active_matches.toLocaleString() || "0"}
+                />
+                <StatCard
+                  icon={UserPlus}
+                  label="New Users Today"
+                  value={stats?.new_users_today.toLocaleString() || "0"}
+                />
+              </>
+            )}
       </section>
 
-      <section aria-label="Activity Charts" className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Suspense fallback={<ChartSkeleton />}>
+      <section
+        aria-label="Activity charts"
+        className="grid grid-cols-1 gap-4 lg:grid-cols-3"
+      >
+        <Suspense fallback={<ChartSkeleton className="lg:col-span-2" />}>
           <UserActivityChart data={stats?.total_users_by_month || []} />
         </Suspense>
         <Suspense fallback={<ChartSkeleton />}>
@@ -71,12 +86,12 @@ const Dashboard = () => {
         </Suspense>
       </section>
 
-      <section aria-label="Popularity Analytics">
+      <section aria-label="Sport popularity">
         <Suspense fallback={<ChartSkeleton />}>
           <PopularSportsChart data={stats?.most_popular_sports || []} />
         </Suspense>
       </section>
-    </main>
+    </div>
   );
 };
 

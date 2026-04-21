@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { motion } from "motion/react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
 interface StatCardProps {
@@ -12,34 +11,52 @@ interface StatCardProps {
   className?: string;
 }
 
-const StatCard = ({ icon: Icon, label, value, growth, isPositive = true, className }: StatCardProps) => {
+const StatCard = ({
+  icon: Icon,
+  label,
+  value,
+  growth,
+  isPositive = true,
+  className,
+}: StatCardProps) => {
   return (
-    <motion.div 
-      whileHover={{ y: -4 }}
-      className={cn("bg-white p-5 rounded-[24px] border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300", className)}
+    <div
+      className={cn(
+        "group rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border/80 hover:shadow-md",
+        className
+      )}
     >
-      <div className="flex justify-between items-start mb-4">
-        <div className="w-12 h-12 bg-[#F0F9FF] rounded-xl flex items-center justify-center">
-          <Icon className="w-6 h-6 text-primary" />
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-muted text-primary">
+          <Icon className="h-5 w-5" strokeWidth={2} />
         </div>
         {growth && (
-          <div className="flex items-center gap-1">
-            {isPositive ? (
-              <TrendingUp className="w-3 h-3 text-slate-400" />
-            ) : (
-              <TrendingDown className="w-3 h-3 text-slate-400" />
+          <span
+            className={cn(
+              "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold",
+              isPositive
+                ? "bg-success/10 text-success"
+                : "bg-destructive/10 text-destructive"
             )}
-            <span className="text-xs font-sans font-medium text-slate-400">
-              {growth}
-            </span>
-          </div>
+          >
+            {isPositive ? (
+              <TrendingUp className="h-3 w-3" />
+            ) : (
+              <TrendingDown className="h-3 w-3" />
+            )}
+            {growth}
+          </span>
         )}
       </div>
-      <div>
-        <h3 className="text-[#0F172A] font-sans font-bold text-3xl mb-1 tracking-tight">{value}</h3>
-        <p className="text-slate-500 font-sans text-sm font-medium">{label}</p>
+      <div className="mt-5">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          {label}
+        </p>
+        <h3 className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground tabular-nums">
+          {value}
+        </h3>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

@@ -1,56 +1,92 @@
 import { memo } from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import {
-  PieChart, Pie, Cell, ResponsiveContainer
-} from 'recharts';
-import { Card, CardContent } from "@/components/ui/card";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { PopularSport } from "@/types/dashboard";
 
-const COLORS = ['#60A5FA', '#F87171', '#93C5FD', '#FBBF24', '#34D399', '#A78BFA'];
+const COLORS = [
+  "var(--color-chart-1)",
+  "var(--color-chart-2)",
+  "var(--color-chart-3)",
+  "var(--color-chart-4)",
+  "var(--color-chart-5)",
+  "var(--color-chart-6)",
+];
 
 interface PopularSportsChartProps {
   data: PopularSport[];
 }
 
+const tooltipStyle = {
+  borderRadius: 12,
+  border: "1px solid #E5E7EB",
+  boxShadow: "0 12px 24px -8px rgba(15, 23, 42, 0.08)",
+  padding: "8px 12px",
+  fontSize: 12,
+};
+
 const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
   return (
-    <Card className="border-none shadow-sm rounded-2xl bg-white">
-      <CardContent className="p-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-6">
-          <div className="text-left">
-            <h3 className="text-base font-sans font-semibold text-[#0F172A]">Most Popular Sport</h3>
-          </div>
-
-          <div className="h-[200px] flex items-center justify-center">
+    <Card>
+      <CardHeader>
+        <CardTitle>Most Popular Sports</CardTitle>
+        <CardDescription>Share of matches by sport</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[200px_1fr]">
+          <div className="relative h-50">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
-                  innerRadius={70}
-                  outerRadius={90}
-                  paddingAngle={0}
+                  innerRadius={62}
+                  outerRadius={88}
+                  paddingAngle={2}
                   dataKey="percentage"
                   nameKey="sport"
-                  stroke="none"
+                  stroke="var(--color-card)"
+                  strokeWidth={3}
                 >
                   {data.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
+                <Tooltip contentStyle={tooltipStyle} />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="space-y-3">
+          <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {data.map((item, index) => (
-              <div key={item.sport} className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                <span className="text-sm font-sans text-slate-500 font-medium">{item.sport}</span>
-                <span className="text-sm font-sans text-slate-500 font-medium ml-auto">{item.percentage}%</span>
-              </div>
+              <li
+                key={item.sport}
+                className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted/40"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  />
+                  <span className="truncate text-sm font-medium text-foreground">
+                    {item.sport}
+                  </span>
+                </div>
+                <span className="text-sm font-semibold tabular-nums text-muted-foreground">
+                  {item.percentage}%
+                </span>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </CardContent>
     </Card>

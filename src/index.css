@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Poppins:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap');
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
@@ -7,61 +7,84 @@
 
 @theme {
   --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Poppins", sans-serif;
+  --font-heading: "Poppins", "Nunito", sans-serif;
 
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-
-  --color-background: #F8FAFC;
-  --color-foreground: #111827;
+  /* Surfaces */
+  --color-background: #F7F8FA;
+  --color-foreground: #0B1220;
 
   --color-card: #FFFFFF;
-  --color-card-foreground: #111827;
+  --color-card-foreground: #0B1220;
 
   --color-popover: #FFFFFF;
-  --color-popover-foreground: #111827;
+  --color-popover-foreground: #0B1220;
 
+  /* Brand */
   --color-primary: #3EA7FD;
   --color-primary-foreground: #FFFFFF;
+  --color-primary-muted: #EFF8FF;
 
-  --color-darkText: #111827;
+  /* Neutrals & nav */
+  --color-darkText: #0B1220;
   --color-sidebarText: #64748B;
 
-  --color-secondary: #F8FAFC;
-  --color-secondary-foreground: #111827;
+  --color-secondary: #F3F4F6;
+  --color-secondary-foreground: #0B1220;
 
-  --color-muted: #F8FAFC;
+  --color-muted: #F3F4F6;
   --color-muted-foreground: #64748B;
 
-  --color-accent: #F8FAFC;
-  --color-accent-foreground: #111827;
+  --color-accent: #F3F4F6;
+  --color-accent-foreground: #0B1220;
 
+  /* Semantic */
   --color-destructive: #EF4444;
-  --color-destructive-foreground: #f8fafc;
+  --color-destructive-foreground: #FFFFFF;
+  --color-success: #10B981;
+  --color-success-foreground: #FFFFFF;
+  --color-warning: #F59E0B;
+  --color-warning-foreground: #0B1220;
 
+  /* Borders & focus */
   --color-border: #E5E7EB;
   --color-input: #E5E7EB;
   --color-ring: #3EA7FD;
 
+  /* Charts — tokenized so dashboards are consistent */
   --color-chart-1: #3EA7FD;
-  --color-chart-2: #60a5fa;
-  --color-chart-3: #93c5fd;
-  --color-chart-4: #bfdbfe;
-  --color-chart-5: #dbeafe;
+  --color-chart-2: #10B981;
+  --color-chart-3: #A78BFA;
+  --color-chart-4: #F59E0B;
+  --color-chart-5: #F87171;
+  --color-chart-6: #60A5FA;
 
-  --radius-xl: 12px;
-  --radius: 0.75rem;
+  /* Radius scale — single 4-step family */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius: 12px;
+
+  /* Elevation — subtle, layered (Linear/Stripe-style) */
+  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04), 0 1px 3px -1px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 8px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 24px -8px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading tracking-tight;
   }
 }

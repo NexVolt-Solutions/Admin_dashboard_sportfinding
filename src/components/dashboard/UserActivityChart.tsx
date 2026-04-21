@@ -1,46 +1,65 @@
 import { memo } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { UsersByMonth } from "@/types/dashboard";
 
 interface UserActivityChartProps {
   data: UsersByMonth[];
 }
 
+const tickStyle = { fill: "#64748B", fontSize: 12, fontWeight: 500 };
+const tooltipStyle = {
+  borderRadius: 12,
+  border: "1px solid #E5E7EB",
+  boxShadow: "0 12px 24px -8px rgba(15, 23, 42, 0.08)",
+  padding: "8px 12px",
+  fontSize: 12,
+};
+
 const UserActivityChart = ({ data }: UserActivityChartProps) => {
   return (
-    <Card className="lg:col-span-2 border-none shadow-sm rounded-2xl bg-white">
-      <CardHeader className="pb-0 pt-5 px-5">
-        <CardTitle className="text-base font-sans font-semibold text-[#0F172A]">Total Users</CardTitle>
+    <Card className="lg:col-span-2">
+      <CardHeader>
+        <CardTitle>Total Users</CardTitle>
+        <CardDescription>Monthly cumulative growth</CardDescription>
       </CardHeader>
-      <CardContent className="h-[350px] p-5">
+      <CardContent className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <LineChart
+            data={data}
+            margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
+          >
             <CartesianGrid strokeDasharray="0" vertical={false} stroke="#F1F5F9" />
             <XAxis
               dataKey="month"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#64748B', fontSize: 12, fontWeight: 500 }}
-              dy={15}
+              tick={tickStyle}
+              dy={12}
             />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#64748B', fontSize: 12, fontWeight: 500 }}
-            />
-            <Tooltip
-              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 16px rgba(0,0,0,0.08)' }}
-            />
+            <YAxis axisLine={false} tickLine={false} tick={tickStyle} />
+            <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: "#E5E7EB", strokeWidth: 1 }} />
             <Line
               type="monotone"
               dataKey="count"
-              stroke="#10B981"
-              strokeWidth={4}
+              stroke="var(--color-chart-2)"
+              strokeWidth={2.5}
               dot={false}
-              activeDot={{ r: 6, strokeWidth: 0, fill: '#10B981' }}
+              activeDot={{ r: 5, strokeWidth: 0, fill: "var(--color-chart-2)" }}
             />
           </LineChart>
         </ResponsiveContainer>

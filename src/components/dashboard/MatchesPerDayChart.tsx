@@ -1,42 +1,63 @@
 import { memo } from "react";
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell
-} from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { MatchesPerDay } from "@/types/dashboard";
 
 interface MatchesPerDayChartProps {
   data: MatchesPerDay[];
 }
 
+const tickStyle = { fill: "#64748B", fontSize: 12, fontWeight: 500 };
+const tooltipStyle = {
+  borderRadius: 12,
+  border: "1px solid #E5E7EB",
+  boxShadow: "0 12px 24px -8px rgba(15, 23, 42, 0.08)",
+  padding: "8px 12px",
+  fontSize: 12,
+};
+
 const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
   return (
-    <Card className="border-none shadow-sm rounded-2xl bg-white">
-      <CardHeader className="pb-0 pt-5 px-5">
-        <CardTitle className="text-base font-sans font-semibold text-[#0F172A]">Matches Per Day</CardTitle>
+    <Card>
+      <CardHeader>
+        <CardTitle>Matches Per Day</CardTitle>
+        <CardDescription>Last 7 days</CardDescription>
       </CardHeader>
-      <CardContent className="h-[350px] p-5">
+      <CardContent className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
+          <BarChart
+            data={data}
+            margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
+          >
             <XAxis
               dataKey="day"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#64748B', fontSize: 12, fontWeight: 500 }}
-              dy={15}
+              tick={tickStyle}
+              dy={12}
             />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#64748B', fontSize: 12, fontWeight: 500 }}
-            />
+            <YAxis axisLine={false} tickLine={false} tick={tickStyle} />
             <Tooltip
-              cursor={{ fill: '#F1F5F9', radius: 8 }}
-              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 16px rgba(0,0,0,0.08)' }}
+              cursor={{ fill: "var(--color-muted)", radius: 8 }}
+              contentStyle={tooltipStyle}
             />
-            <Bar dataKey="count" radius={[6, 6, 6, 6]} barSize={24}>
+            <Bar dataKey="count" radius={[8, 8, 8, 8]} barSize={20}>
               {data.map((_, index) => (
-                <Cell key={`cell-${index}`} fill="#A78BFA" />
+                <Cell key={`cell-${index}`} fill="var(--color-chart-3)" />
               ))}
             </Bar>
           </BarChart>

@@ -1,5 +1,15 @@
 import React, { useMemo } from "react";
-import { LayoutDashboard, Users, Trophy, MessageSquare, FileText, HelpCircle, Settings, LogOut, X } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Trophy,
+  MessageSquare,
+  FileText,
+  HelpCircle,
+  Settings,
+  LogOut,
+  X,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/assets/assets";
@@ -13,10 +23,10 @@ const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
   { icon: Users, label: "Users", path: "/users" },
   { icon: Trophy, label: "Match", path: "/match" },
-  { icon: MessageSquare, label: "Reviews Moderation", path: "/reviews" },
-  { icon: FileText, label: "Content Management", path: "/content" },
-  { icon: HelpCircle, label: "Support Request", path: "/support" },
-  { icon: Settings, label: "Setting", path: "/settings" },
+  { icon: MessageSquare, label: "Reviews", path: "/reviews" },
+  { icon: FileText, label: "Content", path: "/content" },
+  { icon: HelpCircle, label: "Support", path: "/support" },
+  { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
 interface SidebarProps {
@@ -33,63 +43,94 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     window.location.replace(LANDING_LOGIN_URL);
   };
 
-  const renderedMenuItems = useMemo(() => {
-    return menuItems.map((item) => {
-      const isActive = location.pathname === item.path || (item.path !== "/" && location.pathname.startsWith(item.path));
-      return (
-        <Link
-          key={item.label}
-          to={item.path}
-          onClick={() => {
-            if (window.innerWidth < 1024) onClose();
-          }}
-          className={cn(
-            "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-sans font-medium text-base relative group",
-            isActive
-              ? "bg-primary text-white shadow-lg shadow-primary/20"
-              : "text-sidebarText hover:bg-slate-50 hover:text-darkText"
-          )}
-        >
-          <item.icon className={cn("w-5 h-5", isActive ? "stroke-[2px]" : "stroke-[1.5px]")} />
-          <span>{item.label}</span>
-          {/* {isActive && (
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-[#1D4ED8] rounded-l-full" />
-          )} */}
-        </Link>
-      );
-    });
-  }, [location.pathname, onClose]);
+  const renderedMenuItems = useMemo(
+    () =>
+      menuItems.map((item) => {
+        const isActive =
+          location.pathname === item.path ||
+          (item.path !== "/" && location.pathname.startsWith(item.path));
+        return (
+          <Link
+            key={item.label}
+            to={item.path}
+            onClick={() => {
+              if (window.innerWidth < 1024) onClose();
+            }}
+            className={cn(
+              "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150",
+              isActive
+                ? "bg-primary-muted text-primary"
+                : "text-sidebarText hover:bg-muted hover:text-foreground"
+            )}
+          >
+            <item.icon
+              className={cn(
+                "h-4.5 w-4.5 shrink-0 transition-colors",
+                isActive
+                  ? "text-primary"
+                  : "text-sidebarText group-hover:text-foreground"
+              )}
+              strokeWidth={isActive ? 2.25 : 1.75}
+            />
+            <span className="truncate">{item.label}</span>
+            {isActive && (
+              <span
+                aria-hidden
+                className="absolute right-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary"
+              />
+            )}
+          </Link>
+        );
+      }),
+    [location.pathname, onClose]
+  );
 
   return (
-    <aside className={cn(
-      "w-[280px] h-screen bg-white border-r border-border flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 lg:translate-x-0",
-      isOpen ? "translate-x-0" : "-translate-x-full"
-    )}>
-      <div className="p-4 flex items-center justify-between">
-        <div className="flex items-center ">
-          {/* <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-            <Trophy className="w-6 h-6 text-white" />
-          </div> */}
-          <img src={Logo} alt="Logo" className="w-20 h-20 " />
-          <span className="font-heading text-2xl font-bold text-[#0F172A] tracking-tight">SportFinding</span>
-        </div>
+    <aside
+      className={cn(
+        "fixed left-0 top-0 z-50 flex h-screen w-65 flex-col border-r border-border bg-card transition-transform duration-300 lg:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      )}
+    >
+      <div className="flex h-16 items-center justify-between border-b border-border px-4">
+        <Link to="/" className="flex items-center gap-2 min-w-0">
+          <img
+            src={Logo}
+            alt=""
+            className="h-9 w-9 shrink-0 object-contain"
+          />
+          <span className="font-heading text-lg font-bold tracking-tight text-foreground truncate">
+            SportFinding
+          </span>
+        </Link>
         <button
+          type="button"
           onClick={onClose}
           aria-label="Close menu"
           title="Close menu"
-          className="lg:hidden p-2 text-sidebarText hover:bg-muted rounded-lg transition-colors"
+          className="rounded-md p-1.5 text-sidebarText transition-colors hover:bg-muted hover:text-foreground lg:hidden"
         >
-          <X className="w-6 h-6" />
+          <X className="h-5 w-5" />
         </button>
       </div>
 
-      <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
+      <div className="px-3 pt-4 pb-2">
+        <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          Workspace
+        </p>
+      </div>
+
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-4">
         {renderedMenuItems}
       </nav>
 
-      <div className="p-4 mt-auto border-t border-border">
-        <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-[#EF4444] hover:bg-destructive/10 transition-colors font-sans font-medium">
-          <LogOut className="w-5 h-5 stroke-[2px]" />
+      <div className="border-t border-border p-3">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+        >
+          <LogOut className="h-4.5 w-4.5" strokeWidth={2} />
           <span>Logout</span>
         </button>
       </div>
