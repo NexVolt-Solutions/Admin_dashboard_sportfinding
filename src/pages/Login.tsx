@@ -1,18 +1,21 @@
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Loader2, Trophy } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const LANDING_LOGIN_URL =
   (import.meta.env.VITE_LANDING_LOGIN_URL as string | undefined) ??
   "https://sportfinding.com/login";
 
 export default function Login() {
+  const { isAuthenticated } = useAuth();
+
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    if (isAuthenticated) {
+      window.location.replace("/");
+    } else {
       window.location.replace(LANDING_LOGIN_URL);
-    }, 800);
-    return () => clearTimeout(timeout);
-  }, []);
+    }
+  }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4">
@@ -26,20 +29,8 @@ export default function Login() {
         <p className="text-slate-400 font-sans font-medium mt-1 mb-8">
           Admin Dashboard
         </p>
-
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 space-y-5">
-          <div className="flex items-center justify-center">
-            <Loader2 className="w-6 h-6 text-primary animate-spin" />
-          </div>
-          <p className="text-slate-500 font-sans font-medium">
-            Redirecting to the sign-in page...
-          </p>
-          <Button
-            onClick={() => window.location.replace(LANDING_LOGIN_URL)}
-            className="w-full rounded-xl h-12 font-sans font-bold bg-[#60A5FA] hover:bg-blue-500 text-base"
-          >
-            Continue to Sign In
-          </Button>
+        <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+          <Loader2 className="w-6 h-6 text-primary animate-spin mx-auto" />
         </div>
       </div>
     </div>

@@ -23,6 +23,7 @@ const Reviews = lazy(() => import("./pages/Reviews"));
 const Content = lazy(() => import("./pages/Content"));
 const Support = lazy(() => import("./pages/Support"));
 const Settings = lazy(() => import("./pages/Settings"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[400px]">
@@ -70,7 +71,7 @@ export default function App() {
         <Route path="/content" element={<Protected><Content /></Protected>} />
         <Route path="/support" element={<Protected><Support /></Protected>} />
         <Route path="/settings" element={<Protected><Settings /></Protected>} />
-        <Route path="*" element={<Protected><Dashboard /></Protected>} />
+        <Route path="*" element={<Protected><NotFound /></Protected>} />
       </Routes>
     </Router>
   );

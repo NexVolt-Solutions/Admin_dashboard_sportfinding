@@ -65,8 +65,6 @@ apiClient.interceptors.response.use(
       original._retry = true;
       const newToken = await refreshAccessToken();
       if (newToken) {
-        original.headers = original.headers ?? {};
-        (original.headers as Record<string, string>).Authorization = `Bearer ${newToken}`;
         return apiClient.request(original);
       }
       bounceToLogin();

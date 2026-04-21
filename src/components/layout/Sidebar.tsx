@@ -1,9 +1,13 @@
 import React, { useMemo } from "react";
 import { LayoutDashboard, Users, Trophy, MessageSquare, FileText, HelpCircle, Settings, LogOut, X } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/assets/assets";
 import { useAuth } from "@/context/AuthContext";
+
+const LANDING_LOGIN_URL =
+  (import.meta.env.VITE_LANDING_LOGIN_URL as string | undefined) ??
+  "https://sportfinding.com/login";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -22,12 +26,11 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();
-    navigate("/login", { replace: true });
+    window.location.replace(LANDING_LOGIN_URL);
   };
 
   const renderedMenuItems = useMemo(() => {
