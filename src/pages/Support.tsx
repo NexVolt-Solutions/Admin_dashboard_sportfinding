@@ -142,7 +142,7 @@ const Support = () => {
                         <TableRow>
                           <TableCell
                             colSpan={5}
-                            className="h-32 text-center text-sm text-muted-foreground"
+                            className="h-80 text-center text-sm text-muted-foreground"
                           >
                             No support requests found for your filters.
                           </TableCell>
