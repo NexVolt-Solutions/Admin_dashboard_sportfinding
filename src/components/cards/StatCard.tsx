@@ -22,13 +22,13 @@ const StatCard = ({
   return (
     <div
       className={cn(
-        "group rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border/80 hover:shadow-md",
+        "group rounded-xl border border-border bg-card p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border/80 hover:shadow-md",
         className
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-muted text-primary">
-          <Icon className="h-5 w-5" strokeWidth={2} />
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-muted text-primary">
+          <Icon className="h-4 w-4" strokeWidth={2} />
         </div>
         {growth && (
           <span
@@ -48,11 +48,11 @@ const StatCard = ({
           </span>
         )}
       </div>
-      <div className="mt-5">
+      <div className="mt-2">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {label}
         </p>
-        <h3 className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground tabular-nums">
+        <h3 className=" mt-1 font-heading text-2xl font-bold tracking-tight text-foreground tabular-nums">
           {value}
         </h3>
       </div>

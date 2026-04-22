@@ -15,11 +15,11 @@ const StatCard = ({ icon: Icon, label, value, growth, isPositive = true, classNa
   return (
     <motion.div 
       whileHover={{ y: -4 }}
-      className={cn("bg-white p-6 rounded-2xl border border-border shadow-sm", className)}
+      className={cn("bg-white p-4 rounded-2xl border border-border shadow-sm", className)}
     >
-      <div className="flex justify-between items-start mb-4">
-        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-          <Icon className="w-6 h-6 text-primary" />
+      <div className="flex justify-between items-start mb-2">
+        <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center">
+          <Icon className="w-4 h-4 text-primary" />
         </div>
         {growth && (
           <span className={cn(
