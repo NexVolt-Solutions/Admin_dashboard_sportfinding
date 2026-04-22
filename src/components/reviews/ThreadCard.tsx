@@ -16,6 +16,11 @@ export default function ThreadCard({
   isActive,
   onClick,
 }: ThreadCardProps) {
+  // Hide the card if there are no reviews
+  if (!reviewsCount || reviewsCount === 0) {
+    return null;
+  }
+
   return (
     <button
       type="button"
@@ -56,7 +61,7 @@ export default function ThreadCard({
           isActive ? "text-primary/70" : "text-muted-foreground"
         )}
       >
-        {reviewsCount ?? 0}
+        {reviewsCount}
       </span>
     </button>
   );

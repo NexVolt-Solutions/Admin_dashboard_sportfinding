@@ -53,11 +53,6 @@ export default function EditorView({
         <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
           {title}
         </h2>
-        <p className="text-xs text-muted-foreground">
-          Markdown supported: <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground/80">## Heading</code>{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground/80">- bullet</code>{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground/80">**bold**</code>
-        </p>
       </div>
 
       <textarea

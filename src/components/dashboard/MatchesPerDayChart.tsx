@@ -52,7 +52,7 @@ const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
             />
             <YAxis axisLine={false} tickLine={false} tick={tickStyle} />
             <Tooltip
-              cursor={{ fill: "var(--color-muted)", radius: 8 }}
+              cursor={false}
               contentStyle={tooltipStyle}
             />
             <Bar dataKey="count" radius={[8, 8, 8, 8]} barSize={20}>

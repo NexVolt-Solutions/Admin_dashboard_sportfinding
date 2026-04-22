@@ -52,7 +52,7 @@ const UserActivityChart = ({ data }: UserActivityChartProps) => {
               dy={12}
             />
             <YAxis axisLine={false} tickLine={false} tick={tickStyle} />
-            <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: "#E5E7EB", strokeWidth: 1 }} />
+            <Tooltip contentStyle={tooltipStyle} cursor={false} />
             <Line
               type="monotone"
               dataKey="count"

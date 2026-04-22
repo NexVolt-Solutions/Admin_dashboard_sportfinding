@@ -17,6 +17,7 @@ export default function Settings() {
 
   return (
     <div className="space-y-8">
+      {/* Header */}
       <header className="flex flex-col gap-1">
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           Settings
@@ -26,8 +27,10 @@ export default function Settings() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[240px_1fr]">
-        <aside className="flex flex-col gap-1">
+      {/* Layout */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[240px_1fr] items-start">
+        {/* Sidebar card (taller) */}
+        <aside className="rounded-xl border border-border bg-card shadow-sm p-3 flex flex-col gap-1 h-full min-h-[450px]">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -58,6 +61,7 @@ export default function Settings() {
           })}
         </aside>
 
+        {/* Active form card */}
         <section className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
           <AnimatePresence mode="wait">
             <motion.div
