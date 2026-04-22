@@ -62,7 +62,7 @@ export default function Users() {
   const [locationFilter, setLocationFilter] = useState("");
   const [page, setPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const limit = 10;
+  const limit = 5;
 
   const { data, isLoading, isFetching } = useQuery<AdminUserListResponse>({
     queryKey: [

@@ -31,7 +31,7 @@ const Match = () => {
   const [location, setLocation] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const limit = 5;
 
   const { data, isLoading, isFetching } = useQuery<AdminMatchListResponse>({
     queryKey: ["matches", search, name, location, dateFilter, page],

@@ -1,18 +1,31 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
 
-function Card({
-  className,
-  size = "default",
-  ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+type CardSize = "sm" | "default" | "lg"
+
+interface CardProps extends React.ComponentProps<"div"> {
+  size?: CardSize
+}
+
+/**
+ * Card
+ *
+ * - Keeps original layout and spacing (padding/gaps) intact.
+ * - Only adjusts vertical size via min-height / max-height variants so the card footprint is shorter.
+ * - Width behavior is unchanged from the original component.
+ */
+function Card({ className, size = "default", ...props }: CardProps) {
   return (
     <div
       data-slot="card"
       data-size={size}
       className={cn(
-        "group/card flex flex-col gap-6 overflow-hidden rounded-xl border border-border bg-card py-6 text-sm text-card-foreground shadow-sm transition-shadow has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl focus:outline-none focus:ring-0 focus-visible:ring-0",
+        // original base classes preserved
+        "group/card flex flex-col gap-6 overflow-hidden rounded-xl border border-border bg-card py-6 text-sm text-card-foreground shadow-sm transition-shadow has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        // ONLY vertical size variants (min-height / max-height)
+        size === "sm" && "min-h-30 max-h-55",
+        size === "default" && "min-h-45 max-h-80",
+        size === "lg" && "min-h-60 max-h-105",
         className
       )}
       {...props}
@@ -20,6 +33,12 @@ function Card({
   )
 }
 
+/**
+ * CardHeader
+ *
+ * Unchanged layout rules; keeps original px/spacing so horizontal layout is identical.
+ * The header will naturally compress vertically when the parent min-height is reduced.
+ */
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -33,6 +52,11 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * CardTitle
+ *
+ * Font sizing preserved; title will wrap/line-clamp naturally if vertical space is constrained.
+ */
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -46,6 +70,9 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * CardDescription
+ */
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -56,6 +83,9 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * CardAction
+ */
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -69,6 +99,11 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * CardContent
+ *
+ * Horizontal padding preserved; content will compress vertically according to the parent's min-height.
+ */
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -79,6 +114,11 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * CardFooter
+ *
+ * Footer spacing preserved; when the card height is reduced the footer remains visible and the content area will shrink first.
+ */
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div

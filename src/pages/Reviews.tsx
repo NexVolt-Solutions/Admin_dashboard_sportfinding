@@ -154,7 +154,7 @@ const Reviews = () => {
             </div>
           </div>
 
-          <div className="flex-1 space-y-1 overflow-y-auto p-2">
+          <div className="flex-1 space-y-1 overflow-y-auto p-30">
             {isLoadingUsers ? (
               Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3 p-3">
@@ -295,7 +295,7 @@ const Reviews = () => {
               </div>
               <div className="max-w-sm space-y-1">
                 <h3 className="font-heading text-base font-semibold text-foreground">
-                  Select a user
+                No user review yet
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   Choose a user from the left to view and moderate their reviews.

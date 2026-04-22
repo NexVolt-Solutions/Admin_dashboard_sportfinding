@@ -37,7 +37,7 @@ const Support = () => {
   const [search, setSearch] = useState("");
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const limit = 20;
+  const limit = 5;
 
   const { data, isLoading, isFetching } = useQuery<SupportListResponse>({
     queryKey: ["support-requests", search, page],
