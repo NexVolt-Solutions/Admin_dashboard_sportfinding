@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface EditorViewProps {
   title: string;
@@ -7,7 +7,12 @@ interface EditorViewProps {
   searchQuery?: string;
 }
 
-export default function EditorView({ title, content, onChange, searchQuery }: EditorViewProps) {
+export default function EditorView({
+  title,
+  content,
+  onChange,
+  searchQuery,
+}: EditorViewProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const adjustHeight = () => {
@@ -22,39 +27,36 @@ export default function EditorView({ title, content, onChange, searchQuery }: Ed
     adjustHeight();
   }, [content]);
 
-  // Handle search highlighting
   useEffect(() => {
     if (searchQuery && textareaRef.current) {
       const index = content.toLowerCase().indexOf(searchQuery.toLowerCase());
       if (index !== -1) {
         textareaRef.current.focus();
-        textareaRef.current.setSelectionRange(index, index + searchQuery.length);
-        
-        // Scroll to the selection if possible
-        const lineHeight = 36; // Approx leading-[2] * 18px
+        textareaRef.current.setSelectionRange(
+          index,
+          index + searchQuery.length
+        );
+        const lineHeight = 28;
         const linesBefore = content.substring(0, index).split("\n").length;
         const scrollTop = (linesBefore - 1) * lineHeight;
-        
-        // Since it's auto-height and in a scrollable container, we might need to scroll the parent
         const parent = textareaRef.current.closest(".overflow-y-auto");
         if (parent) {
-          parent.scrollTo({
-            top: scrollTop,
-            behavior: "smooth"
-          });
+          parent.scrollTo({ top: scrollTop, behavior: "smooth" });
         }
       }
     }
   }, [searchQuery, content]);
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
-        <h2 className="text-[24px] font-sans font-bold text-[#0F172A]">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-1">
+        <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
           {title}
         </h2>
-        <p className="text-[13px] text-slate-400 font-sans">
-          Markdown supported: <code className="text-slate-500">## Heading</code>, <code className="text-slate-500">- bullet</code>, <code className="text-slate-500">**bold**</code>
+        <p className="text-xs text-muted-foreground">
+          Markdown supported: <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground/80">## Heading</code>{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground/80">- bullet</code>{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground/80">**bold**</code>
         </p>
       </div>
 
@@ -65,8 +67,8 @@ export default function EditorView({ title, content, onChange, searchQuery }: Ed
           onChange(e.target.value);
           adjustHeight();
         }}
-        className="w-full font-sans text-[18px] leading-[2] text-slate-500 font-medium bg-transparent border-none focus:ring-0 resize-none p-0 overflow-hidden"
-        placeholder="Start writing..."
+        placeholder="Start writing…"
+        className="w-full resize-none overflow-hidden bg-transparent p-0 text-[15px] leading-[1.75] text-foreground/85 placeholder:text-muted-foreground focus:outline-none"
       />
     </div>
   );

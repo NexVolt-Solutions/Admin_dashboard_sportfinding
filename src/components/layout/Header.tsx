@@ -2,13 +2,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
+import type { AdminAccountResponse } from "@/types/dashboard";
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 export default function Header({ onMenuClick }: HeaderProps) {
-  const { data: account } = useQuery<{ full_name: string; email: string }>({
+  const { data: account } = useQuery<AdminAccountResponse>({
     queryKey: ["admin-account"],
     queryFn: async () => {
       const res = await apiClient.get("/api/v1/admin/account");
@@ -16,40 +17,49 @@ export default function Header({ onMenuClick }: HeaderProps) {
     },
   });
 
-  const initials = account?.full_name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "AD";
+  const initials =
+    account?.full_name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "AD";
 
   return (
-    <header className="fixed top-0 right-0 left-0 lg:left-[280px] h-[64px] bg-white/80 backdrop-blur-md border-b border-slate-100 flex items-center justify-between lg:justify-end px-4 sm:px-6 z-40 shadow-sm">
+    <header className="fixed top-0 right-0 left-0 lg:left-65 z-40 flex h-16 items-center justify-between border-b border-border bg-card/80 px-4 backdrop-blur-md sm:px-6 lg:justify-end">
       <button
+        type="button"
         onClick={onMenuClick}
         aria-label="Open menu"
-        title="Open menu"
-        className="lg:hidden p-2 text-sidebarText hover:bg-muted rounded-lg transition-colors"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden"
       >
-        <Menu className="w-6 h-6" />
+        <Menu className="h-5 w-5" />
       </button>
 
       <div className="flex items-center gap-3">
-        <Avatar className="h-10 w-10 border-2 border-primary/10">
-          <AvatarImage
-            src={account ? `https://ui-avatars.com/api/?name=${encodeURIComponent(account.full_name)}&size=40&background=60A5FA&color=fff` : ""}
-            referrerPolicy="no-referrer"
-          />
-          <AvatarFallback className="bg-primary text-white font-sans font-bold text-sm">{initials}</AvatarFallback>
-        </Avatar>
-        <div className="text-left hidden sm:block">
-          <p className="text-[15px] font-sans font-bold text-[#0F172A] leading-tight">
+        <div className="hidden text-right sm:block">
+          <p className="text-sm font-semibold text-foreground leading-tight">
             {account?.full_name || "Admin"}
           </p>
-          <p className="text-xs text-slate-400 font-sans">
+          <p className="text-xs text-muted-foreground">
             {account?.email || ""}
           </p>
         </div>
+        <Avatar className="h-9 w-9 ring-1 ring-border">
+          <AvatarImage
+            src={
+              account
+                ? `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    account.full_name
+                  )}&size=72&background=3EA7FD&color=fff&bold=true`
+                : ""
+            }
+            referrerPolicy="no-referrer"
+          />
+          <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
       </div>
     </header>
   );

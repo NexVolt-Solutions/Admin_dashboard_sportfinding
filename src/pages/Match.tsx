@@ -1,9 +1,8 @@
 import { memo, useState, useMemo, useCallback } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Pagination } from "@/components/ui/pagination";
 import FilterGroup from "@/components/matches/FilterGroup";
 import MatchesTable from "@/components/matches/MatchesTable";
 import type { AdminMatchListResponse } from "@/types/dashboard";
@@ -65,10 +64,14 @@ const Match = () => {
   }, []);
 
   return (
-    <main className="space-y-8">
-      <header>
-        <h1 className="text-[32px] font-sans font-bold text-[#0F172A] leading-tight">Matches Management</h1>
-        <p className="text-[16px] text-slate-400 font-sans font-medium mt-1">{total} total matches</p>
+    <div className="space-y-8">
+      <header className="flex flex-col gap-1">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Matches
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {total.toLocaleString()} total match{total === 1 ? "" : "es"}
+        </p>
       </header>
 
       <section aria-label="Filters">
@@ -98,58 +101,27 @@ const Match = () => {
         />
       </section>
 
-      <section aria-label="Matches List">
+      <section aria-label="Matches list">
         {isLoading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-20 w-full rounded-2xl bg-white" />
-            ))}
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <div className="divide-y divide-border/60">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 p-4">
+                  <Skeleton className="h-4 w-40" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="ml-auto h-8 w-8 rounded-md" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <MatchesTable matches={matches} />
         )}
       </section>
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 py-6">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="rounded-xl border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <Button
-                key={i}
-                variant={page === i + 1 ? "default" : "outline"}
-                size="sm"
-                onClick={() => setPage(i + 1)}
-                className={`w-10 h-10 rounded-xl font-sans font-bold transition-all ${
-                  page === i + 1
-                    ? "bg-[#60A5FA] text-white shadow-md shadow-blue-100 border-none"
-                    : "border-slate-200 text-slate-400 hover:border-primary/50"
-                }`}
-              >
-                {i + 1}
-              </Button>
-            ))}
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-            className="rounded-xl border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </Button>
-        </div>
-      )}
-    </main>
+      <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+    </div>
   );
 };
 

@@ -5,23 +5,32 @@ interface SportCardProps {
   name: string;
   level: string;
   className?: string;
-  key?: React.Key;
 }
 
+const levelStyles: Record<string, string> = {
+  beginner: "bg-primary-muted text-primary",
+  intermediate: "bg-warning/15 text-warning",
+  advanced: "bg-success/15 text-success",
+};
+
 const SportCard = ({ name, level, className }: SportCardProps) => {
-  const isIntermediate = level.toLowerCase() === "intermediate";
-  const isAdvanced = level.toLowerCase() === "advanced";
-  const isBeginner = level.toLowerCase() === "beginner";
+  const style =
+    levelStyles[level.toLowerCase()] ?? "bg-muted text-muted-foreground";
 
   return (
-    <div className={cn(
-      "bg-[#E0F2FE]/40 border border-transparent rounded-2xl p-7 flex items-center justify-between transition-all hover:bg-[#E0F2FE]/60",
-      className
-    )}>
-      <span className="font-sans font-bold text-[18px] text-[#0F172A]">{name}</span>
-      <span className={cn(
-        "text-[14px] font-sans font-medium px-8 py-2.5 rounded-2xl border bg-white text-[#60A5FA] border-blue-100 shadow-sm"
-      )}>
+    <div
+      className={cn(
+        "flex items-center justify-between gap-4 rounded-lg border border-border bg-card px-4 py-3 shadow-xs transition-colors hover:bg-muted/40",
+        className
+      )}
+    >
+      <span className="text-sm font-medium text-foreground">{name}</span>
+      <span
+        className={cn(
+          "inline-flex h-6 items-center rounded-md px-2 text-xs font-medium",
+          style
+        )}
+      >
         {level}
       </span>
     </div>

@@ -171,12 +171,26 @@ Examples of backend endpoints currently used by the frontend include:
 
 - `/api/v1/auth/login`
 - `/api/v1/admin/dashboard`
+- `/api/v1/admin/account`
 - `/api/v1/admin/users`
+- `/api/v1/admin/matches`
 - `/api/v1/admin/reviews/users`
 - `/api/v1/admin/support-requests`
 - `/api/v1/admin/content/:section`
 
-There are also match-management requests in the current UI under `/api/matches/...`, so the backend should expose compatible match endpoints for listing, viewing, editing, deleting, and updating match status.
+The frontend is currently aligned to schema-driven admin responses such as:
+
+- `DashboardStatsResponse`
+- `AdminAccountResponse`
+- `PaginatedResponse[AdminUserListItemResponse]`
+- `AdminUserDetailResponse`
+- `PaginatedResponse[AdminMatchListItemResponse]`
+- `MatchDetailResponse`
+- `PaginatedResponse[ReviewModerationUserItemResponse]`
+- `ReviewModerationUserReviewsResponse`
+- `PaginatedResponse[SupportRequestListItemResponse]`
+- `SupportRequestDetailResponse`
+- `ContentPageResponse`
 
 ## Environment Variables
 

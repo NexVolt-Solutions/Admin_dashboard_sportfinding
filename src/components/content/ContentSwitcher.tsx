@@ -1,4 +1,3 @@
-import React from "react";
 import { cn } from "@/lib/utils";
 
 export type ContentTab = "TOS" | "PRIVACY" | "HELP";
@@ -15,30 +14,48 @@ const allTabs: { id: ContentTab; label: string }[] = [
   { id: "HELP", label: "Help & Support" },
 ];
 
-export default function ContentSwitcher({ activeTab, onTabChange, availableTabs }: ContentSwitcherProps) {
-  const displayTabs = availableTabs 
-    ? allTabs.filter(t => availableTabs.includes(t.id))
+export default function ContentSwitcher({
+  activeTab,
+  onTabChange,
+  availableTabs,
+}: ContentSwitcherProps) {
+  const displayTabs = availableTabs
+    ? allTabs.filter((t) => availableTabs.includes(t.id))
     : allTabs;
 
+  if (displayTabs.length === 0) {
+    return (
+      <p className="text-sm italic text-muted-foreground">
+        No matching sections
+      </p>
+    );
+  }
+
   return (
-    <div className="flex items-center gap-3">
-      {displayTabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => onTabChange(tab.id)}
-          className={cn(
-            "px-6 h-11 font-sans font-medium text-[13px] transition-all whitespace-nowrap rounded-xl border",
-            activeTab === tab.id
-              ? "bg-[#60A5FA] text-white border-[#60A5FA] shadow-sm"
-              : "bg-white text-[#60A5FA] border-[#60A5FA] hover:bg-blue-50"
-          )}
-        >
-          {tab.label}
-        </button>
-      ))}
-      {displayTabs.length === 0 && (
-        <p className="text-sm text-slate-400 font-sans px-4 italic">No matching sections found</p>
-      )}
+    <div
+      role="tablist"
+      className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-1 shadow-xs"
+    >
+      {displayTabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            role="tab"
+            aria-selected={isActive ? "true" : "false"}
+            onClick={() => onTabChange(tab.id)}
+            className={cn(
+              "inline-flex h-8 items-center whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors",
+              isActive
+                ? "bg-primary-muted text-primary"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            {tab.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

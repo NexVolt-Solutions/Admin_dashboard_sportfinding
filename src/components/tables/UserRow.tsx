@@ -2,12 +2,16 @@ import React, { useCallback } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import type { AdminUser } from "@/types/dashboard";
 
 interface UserRowProps {
@@ -17,6 +21,8 @@ interface UserRowProps {
 const UserRow = ({ user }: UserRowProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const normalizedStatus = user.status.toLowerCase();
+  const isBlocked = normalizedStatus === "blocked";
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -24,11 +30,11 @@ const UserRow = ({ user }: UserRowProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success("User deleted successfully");
+      toast.success("User deleted");
     },
     onError: () => {
       toast.error("Failed to delete user");
-    }
+    },
   });
 
   const blockMutation = useMutation({
@@ -38,72 +44,98 @@ const UserRow = ({ user }: UserRowProps) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success(data.message || "User blocked successfully");
+      toast.success(data.message || "User status updated");
     },
     onError: () => {
-      toast.error("Failed to block user");
-    }
+      toast.error("Failed to update user status");
+    },
   });
 
-  const handleDelete = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (window.confirm(`Are you sure you want to delete ${user.full_name}?`)) {
-      deleteMutation.mutate(user.id);
-    }
-  }, [user.id, user.full_name, deleteMutation]);
+  const handleDelete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (window.confirm(`Delete ${user.full_name}? This cannot be undone.`)) {
+        deleteMutation.mutate(user.id);
+      }
+    },
+    [user.id, user.full_name, deleteMutation]
+  );
 
-  const handleBlock = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    blockMutation.mutate(user.id);
-  }, [user.id, blockMutation]);
+  const handleBlock = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      blockMutation.mutate(user.id);
+    },
+    [user.id, blockMutation]
+  );
 
   const handleRowClick = useCallback(() => {
     navigate(`/users/${user.id}`);
   }, [navigate, user.id]);
 
+  const initials = user.full_name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <TableRow
       onClick={handleRowClick}
-      className="border-b border-slate-50 hover:bg-slate-50/50 transition-all duration-300 group cursor-pointer"
+      className="group cursor-pointer border-border/60 transition-colors hover:bg-muted/50"
     >
-      <TableCell className="py-4">
-        <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-full bg-[#60A5FA] flex items-center justify-center text-white font-sans font-bold text-lg shadow-sm">
-            {user.full_name.split(' ').map(n => n[0]).join('')}
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-muted text-sm font-semibold text-primary">
+            {initials}
           </div>
-          <div className="flex flex-col">
-            <span className="font-sans font-semibold text-[#0F172A] text-base">{user.full_name}</span>
-            {user.status && user.status !== "active" && (
-              <span className="text-[10px] text-destructive font-bold uppercase tracking-wider">{user.status}</span>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-medium text-foreground">
+              {user.full_name}
+            </span>
+            {isBlocked && (
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-destructive">
+                Blocked
+              </span>
             )}
           </div>
         </div>
       </TableCell>
-      <TableCell className="font-sans text-slate-400 font-medium">{user.email}</TableCell>
-      <TableCell className="font-sans text-slate-400 font-medium">{user.location}</TableCell>
-      <TableCell className="font-sans text-[#0F172A] font-semibold">{user.matches}</TableCell>
+      <TableCell className="text-sm text-muted-foreground">{user.email}</TableCell>
+      <TableCell className="text-sm text-muted-foreground">
+        {user.location || "—"}
+      </TableCell>
+      <TableCell className="text-sm font-medium tabular-nums text-foreground">
+        {user.matches}
+      </TableCell>
       <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
         <DropdownMenu>
-          <DropdownMenuTrigger className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <MoreHorizontal className="w-5 h-5 text-[#0F172A] font-bold" />
+          <DropdownMenuTrigger
+            className={cn(
+              "inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors",
+              "hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30"
+            )}
+            aria-label="Row actions"
+          >
+            <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-[0_10px_40px_rgba(0,0,0,0.08)] min-w-[140px] p-2 bg-white">
-            <DropdownMenuItem className="focus:bg-slate-50 rounded-xl py-2 px-4">
-              <Link to={`/users/${user.id}`} className="text-[13px] font-sans font-medium text-slate-500 cursor-pointer block w-full text-center">
-                View Profile
-              </Link>
-            </DropdownMenuItem>
+          <DropdownMenuContent align="end" className="min-w-40">
             <DropdownMenuItem
-              onClick={handleBlock}
-              className="focus:bg-slate-50 rounded-xl py-2.5 px-4 text-[13px] font-sans font-medium text-amber-500 cursor-pointer block w-full text-center"
+              onClick={() => navigate(`/users/${user.id}`)}
+              className="cursor-pointer"
             >
-              {user.status === "blocked" ? "Unblock" : "Block"}
+              View profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleBlock} className="cursor-pointer">
+              {isBlocked ? "Unblock user" : "Block user"}
             </DropdownMenuItem>
             <DropdownMenuItem
+              variant="destructive"
               onClick={handleDelete}
-              className="focus:bg-slate-50 rounded-xl py-2.5 px-4 text-[13px] font-sans font-medium text-rose-500 cursor-pointer block w-full text-center"
+              className="cursor-pointer"
             >
-              Delete
+              Delete user
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

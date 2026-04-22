@@ -31,12 +31,13 @@ const Content = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["content", sectionName],
     queryFn: async () => {
-      const res = await apiClient.get(`/api/v1/admin/content/${encodeURIComponent(sectionName)}`);
+      const res = await apiClient.get(
+        `/api/v1/admin/content/${encodeURIComponent(sectionName)}`
+      );
       return res.data as { section: string; title: string; content: string };
     },
   });
 
-  // Sync editor content when data loads or tab changes
   useEffect(() => {
     if (data?.content !== undefined) {
       setCurrentContent(data.content);
@@ -46,9 +47,9 @@ const Content = () => {
   const filteredTabs = useMemo(() => {
     const s = search.toLowerCase();
     if (!s) return Object.keys(sectionMap) as ContentTab[];
-    return (Object.keys(sectionMap) as ContentTab[]).filter((tab) => {
-      return sectionLabels[tab].toLowerCase().includes(s);
-    });
+    return (Object.keys(sectionMap) as ContentTab[]).filter((tab) =>
+      sectionLabels[tab].toLowerCase().includes(s)
+    );
   }, [search]);
 
   useEffect(() => {
@@ -68,10 +69,13 @@ const Content = () => {
     if (!isDirty) return;
     setIsSaving(true);
     try {
-      await apiClient.put(`/api/v1/admin/content/${encodeURIComponent(sectionName)}`, {
-        title: data?.title || sectionLabels[activeTab],
-        content: currentContent,
-      });
+      await apiClient.put(
+        `/api/v1/admin/content/${encodeURIComponent(sectionName)}`,
+        {
+          title: data?.title || sectionLabels[activeTab],
+          content: currentContent,
+        }
+      );
       queryClient.invalidateQueries({ queryKey: ["content", sectionName] });
       toast.success("Content saved successfully");
     } catch {
@@ -82,22 +86,25 @@ const Content = () => {
   };
 
   return (
-    <main className="h-full flex flex-col space-y-6">
-      <header>
-        <h1 className="text-[32px] font-sans font-bold text-[#0F172A] leading-tight">
-          Content Management
+    <div className="space-y-8">
+      <header className="flex flex-col gap-1">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Content
         </h1>
-        <p className="text-[16px] text-slate-400 font-sans font-medium mt-1">
-          Edit platform content and policies
+        <p className="text-sm text-muted-foreground">
+          Edit platform policies and help articles
         </p>
       </header>
 
-      <section aria-label="Controls" className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="relative w-full lg:w-[450px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      <section
+        aria-label="Controls"
+        className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <div className="relative w-full lg:max-w-96">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search Content..."
-            className="pl-12 bg-[#F8FAFC] border-slate-200 rounded-xl h-12 font-sans text-[15px] focus:ring-primary/20"
+            placeholder="Search content…"
+            className="pl-9"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -109,10 +116,13 @@ const Content = () => {
         />
       </section>
 
-      <section aria-label="Editor" className="flex-1 bg-white rounded-[24px] p-8 md:p-10 overflow-y-auto">
+      <section
+        aria-label="Editor"
+        className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8"
+      >
         {isLoading ? (
-          <div className="space-y-6">
-            <Skeleton className="h-8 w-64" />
+          <div className="space-y-3">
+            <Skeleton className="h-7 w-64" />
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-3/4" />
@@ -129,8 +139,12 @@ const Content = () => {
         )}
       </section>
 
-      <SaveAction onSave={handleSave} disabled={!isDirty || isLoading || isSaving} isSaving={isSaving} />
-    </main>
+      <SaveAction
+        onSave={handleSave}
+        disabled={!isDirty || isLoading || isSaving}
+        isSaving={isSaving}
+      />
+    </div>
   );
 };
 

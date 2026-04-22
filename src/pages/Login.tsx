@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Loader2, Trophy, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { DEV_BYPASS_TOKEN } from "@/lib/api-client";
 
 const LANDING_LOGIN_URL =
   (import.meta.env.VITE_LANDING_LOGIN_URL as string | undefined) ??
@@ -12,21 +14,22 @@ const IS_DEV = import.meta.env.DEV;
 
 export default function Login() {
   const { isAuthenticated, login } = useAuth();
+  const navigate = useNavigate();
   const [devToken, setDevToken] = useState("");
 
   useEffect(() => {
     if (isAuthenticated) {
-      window.location.replace("/");
+      navigate("/", { replace: true });
       return;
     }
     if (!IS_DEV) {
       window.location.replace(LANDING_LOGIN_URL);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   const handleDevQuickLogin = () => {
-    login(devToken.trim() || "dev-bypass-token", "dev-bypass-refresh");
-    window.location.replace("/");
+    login(devToken.trim() || DEV_BYPASS_TOKEN, "dev-bypass-refresh");
+    navigate("/", { replace: true });
   };
 
   return (

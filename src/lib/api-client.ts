@@ -4,6 +4,14 @@ const baseURL = import.meta.env.VITE_API_URL || "https://api.sportfinding.com";
 
 export const ACCESS_TOKEN_KEY = "admin_token";
 export const REFRESH_TOKEN_KEY = "admin_refresh_token";
+export const DEV_BYPASS_TOKEN = "dev-bypass-token";
+
+function isDevBypass() {
+  return (
+    import.meta.env.DEV &&
+    localStorage.getItem(ACCESS_TOKEN_KEY) === DEV_BYPASS_TOKEN
+  );
+}
 
 const apiClient = axios.create({ baseURL });
 
@@ -60,6 +68,12 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const url = original?.url ?? "";
     const isAuthCall = url.includes("/auth/login") || url.includes("/auth/refresh");
+
+    if ((status === 401 || status === 403) && !isAuthCall && isDevBypass()) {
+      // Dev-only: let the UI shell stay rendered on auth failures so the
+      // dashboard can be previewed without a real backend session.
+      return Promise.reject(error);
+    }
 
     if (status === 401 && original && !original._retry && !isAuthCall) {
       original._retry = true;

@@ -1,4 +1,3 @@
-import React from "react";
 import { cn } from "@/lib/utils";
 import { User as UserIcon } from "lucide-react";
 
@@ -10,36 +9,54 @@ interface ThreadCardProps {
   onClick?: () => void;
 }
 
-export default function ThreadCard({ userName, avatarUrl, reviewsCount, isActive, onClick }: ThreadCardProps) {
+export default function ThreadCard({
+  userName,
+  avatarUrl,
+  reviewsCount,
+  isActive,
+  onClick,
+}: ThreadCardProps) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
-        "w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center justify-between group relative overflow-hidden",
+        "group relative flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
         isActive
-          ? "bg-[#F8FAFC] border-slate-100 shadow-none"
-          : "bg-white border-transparent hover:bg-slate-50 hover:border-slate-100"
+          ? "border-transparent bg-primary-muted"
+          : "border-transparent bg-transparent hover:bg-muted"
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         {avatarUrl ? (
           <img
             src={avatarUrl}
             alt={userName}
-            className="w-10 h-10 rounded-full object-cover"
+            className="h-9 w-9 shrink-0 rounded-full object-cover"
+            referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-            <UserIcon className="w-5 h-5 text-[#60A5FA]" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-muted text-primary">
+            <UserIcon className="h-4 w-4" />
           </div>
         )}
-        <h4 className="font-sans font-bold text-[16px] text-[#0F172A] leading-none">
+        <span
+          className={cn(
+            "truncate text-sm font-medium",
+            isActive ? "text-primary" : "text-foreground"
+          )}
+        >
           {userName}
-        </h4>
+        </span>
       </div>
 
-      <span className="text-[12px] font-sans text-slate-400 font-medium">
-        {reviewsCount || 0} reviews
+      <span
+        className={cn(
+          "shrink-0 text-xs font-medium tabular-nums",
+          isActive ? "text-primary/70" : "text-muted-foreground"
+        )}
+      >
+        {reviewsCount ?? 0}
       </span>
     </button>
   );

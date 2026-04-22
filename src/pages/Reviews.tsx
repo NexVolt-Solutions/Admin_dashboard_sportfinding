@@ -1,5 +1,11 @@
-import React, { useState, memo, useMemo } from "react";
-import { Search, Trash2, MessageSquare, User as UserIcon } from "lucide-react";
+import { useState, memo, useMemo } from "react";
+import {
+  Search,
+  Trash2,
+  MessageSquare,
+  ChevronLeft,
+  Loader2,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import ThreadCard from "@/components/reviews/ThreadCard";
 import ReviewItem from "@/components/reviews/ReviewItem";
@@ -59,38 +65,40 @@ const Reviews = () => {
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  // Fetch users for the left panel
-  const { data: usersData, isLoading: isLoadingUsers } = useQuery<ReviewUsersResponse>({
-    queryKey: ["review-users", search],
-    queryFn: async () => {
-      const res = await apiClient.get("/api/v1/admin/reviews/users", {
-        params: {
-          search: search || undefined,
-          page: 1,
-          limit: 50,
-        },
-      });
-      return res.data;
-    },
-  });
+  const { data: usersData, isLoading: isLoadingUsers, isFetching } =
+    useQuery<ReviewUsersResponse>({
+      queryKey: ["review-users", search],
+      queryFn: async () => {
+        const res = await apiClient.get("/api/v1/admin/reviews/users", {
+          params: {
+            search: search || undefined,
+            page: 1,
+            limit: 50,
+          },
+        });
+        return res.data;
+      },
+    });
 
   const users = usersData?.items || [];
 
-  // Fetch reviews for the selected user
-  const { data: reviewsData, isLoading: isLoadingReviews } = useQuery<UserReviewsResponse>({
-    queryKey: ["user-reviews", activeThread],
-    queryFn: async () => {
-      const res = await apiClient.get(`/api/v1/admin/reviews/users/${activeThread}`, {
-        params: { page: 1, limit: 50 },
-      });
-      return res.data;
-    },
-    enabled: !!activeThread,
-  });
+  const { data: reviewsData, isLoading: isLoadingReviews } =
+    useQuery<UserReviewsResponse>({
+      queryKey: ["user-reviews", activeThread],
+      queryFn: async () => {
+        const res = await apiClient.get(
+          `/api/v1/admin/reviews/users/${activeThread}`,
+          {
+            params: { page: 1, limit: 50 },
+          }
+        );
+        return res.data;
+      },
+      enabled: !!activeThread,
+    });
 
   const reviews = reviewsData?.items || [];
 
-  // Delete review mutation
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       await apiClient.delete(`/api/v1/admin/reviews/${id}`);
@@ -106,47 +114,55 @@ const Reviews = () => {
     },
   });
 
-  const activeUser = useMemo(() => 
-    users.find(u => u.id === activeThread), 
+  const activeUser = useMemo(
+    () => users.find((u) => u.id === activeThread),
     [users, activeThread]
   );
 
   return (
-    <main className="h-full flex flex-col space-y-6">
-      <header className={cn(activeThread && "hidden lg:block")}>
-        <h1 className="text-[32px] font-sans font-bold text-[#0F172A] leading-tight">
-          Reviews Moderation
+    <div className="flex h-full flex-col gap-8">
+      <header className={cn("flex flex-col gap-1", activeThread && "hidden lg:flex")}>
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+          Reviews
         </h1>
-        <p className="text-[16px] text-slate-400 font-sans font-medium mt-1">
+        <p className="text-sm text-muted-foreground">
           Monitor and moderate profile reviews
         </p>
       </header>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 overflow-hidden relative">
-        {/* Left Pane: Thread Sidebar */}
-        <section 
+      <div className="relative grid flex-1 grid-cols-1 gap-6 overflow-hidden lg:grid-cols-[360px_1fr]">
+        <section
           aria-label="Threads"
           className={cn(
-            "flex flex-col space-y-4 overflow-hidden transition-all duration-300 bg-white rounded-[24px] p-6",
+            "flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm",
             activeThread && "hidden lg:flex"
           )}
         >
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <Input
-              placeholder="Search users.."
-              className="pl-12 bg-[#F8FAFC] border-slate-200 rounded-xl h-12 font-sans text-[15px] focus:ring-primary/20"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          <div className="border-b border-border/60 p-3">
+            <div className="relative">
+              {isFetching ? (
+                <Loader2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+              ) : (
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              )}
+              <Input
+                placeholder="Search users…"
+                className="pl-9"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-slate-200">
+          <div className="flex-1 space-y-1 overflow-y-auto p-2">
             {isLoadingUsers ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="p-4 rounded-2xl border border-slate-50 space-y-3">
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-3 w-1/3" />
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 p-3">
+                  <Skeleton className="h-9 w-9 rounded-full" />
+                  <div className="flex-1 space-y-1.5">
+                    <Skeleton className="h-3.5 w-1/2" />
+                    <Skeleton className="h-3 w-1/3" />
+                  </div>
                 </div>
               ))
             ) : users.length > 0 ? (
@@ -161,54 +177,59 @@ const Reviews = () => {
                 />
               ))
             ) : (
-              <div className="text-center py-10 text-slate-400 font-sans">
+              <div className="px-4 py-12 text-center text-sm text-muted-foreground">
                 No users found
               </div>
             )}
           </div>
         </section>
 
-        {/* Right Pane: Moderation Feed */}
-        <section 
-          aria-label="Moderation Feed"
+        <section
+          aria-label="Moderation"
           className={cn(
-            "bg-white rounded-[24px] overflow-hidden flex flex-col transition-all duration-300",
-            !activeThread && "hidden lg:flex",
-            activeThread && "flex"
+            "flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm",
+            !activeThread && "hidden lg:flex"
           )}
         >
           {activeThread ? (
             <>
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                <div className="flex items-center gap-4">
-                  <button 
+              <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setActiveThread(null)}
-                    className="lg:hidden text-[#60A5FA] font-sans font-bold text-sm flex items-center gap-2"
+                    aria-label="Back to threads"
+                    className="lg:hidden"
                   >
-                    ←
-                  </button>
-                  <div className="flex items-center gap-3">
-                    {activeUser?.avatar_url ? (
-                      <img src={activeUser.avatar_url} alt={activeUser.full_name} className="w-10 h-10 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-                        <UserIcon className="w-5 h-5 text-[#60A5FA]" />
-                      </div>
-                    )}
-                    <h2 className="font-sans font-bold text-[#0F172A] leading-tight">
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  {activeUser?.avatar_url ? (
+                    <img
+                      src={activeUser.avatar_url}
+                      alt={activeUser.full_name}
+                      className="h-9 w-9 rounded-full object-cover ring-1 ring-border"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-muted text-sm font-semibold text-primary">
+                      {activeUser?.full_name?.charAt(0).toUpperCase() || "?"}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">
                       {activeUser?.full_name}
-                    </h2>
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {activeUser?.reviews_count} review
+                      {activeUser?.reviews_count === 1 ? "" : "s"}
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-full">
-                  <MessageSquare className="w-4 h-4 text-slate-400" />
-                  <span className="text-xs font-sans font-bold text-slate-500">
-                    {activeUser?.reviews_count} Reviews
-                  </span>
-                </div>
               </div>
-              
-              <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-4 scrollbar-thin scrollbar-thumb-slate-200">
+
+              <div className="flex-1 space-y-3 overflow-y-auto p-6">
                 <AnimatePresence mode="popLayout">
                   {isLoadingReviews ? (
                     Array.from({ length: 3 }).map((_, i) => (
@@ -216,15 +237,15 @@ const Reviews = () => {
                         key={`skeleton-${i}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="p-6 rounded-2xl border border-slate-50 space-y-4"
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        className="space-y-3 rounded-xl border border-border bg-card p-5 shadow-xs"
                       >
                         <div className="flex items-center gap-3">
                           <Skeleton className="h-4 w-24" />
                           <Skeleton className="h-3 w-16" />
                         </div>
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-2/3" />
+                        <Skeleton className="h-3.5 w-full" />
+                        <Skeleton className="h-3.5 w-2/3" />
                       </motion.div>
                     ))
                   ) : reviews.length > 0 ? (
@@ -233,7 +254,7 @@ const Reviews = () => {
                         key={review.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
                         transition={{ duration: 0.2 }}
                       >
                         <ReviewItem
@@ -246,17 +267,21 @@ const Reviews = () => {
                       </motion.div>
                     ))
                   ) : (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="h-full flex flex-col items-center justify-center text-center space-y-4 py-20"
+                      className="flex h-full flex-col items-center justify-center gap-3 py-16 text-center"
                     >
-                      <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center">
-                        <MessageSquare className="w-10 h-10 text-slate-300" />
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                        <MessageSquare className="h-6 w-6 text-muted-foreground" />
                       </div>
-                      <div className="space-y-1">
-                        <p className="font-sans text-[#0F172A] font-bold">No reviews found</p>
-                        <p className="font-sans text-slate-400 text-sm">This user hasn't received any reviews yet.</p>
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-semibold text-foreground">
+                          No reviews yet
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          This user hasn't received any reviews.
+                        </p>
                       </div>
                     </motion.div>
                   )}
@@ -264,14 +289,16 @@ const Reviews = () => {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-8 space-y-4">
-              <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center">
-                <MessageSquare className="w-12 h-12 text-[#60A5FA] opacity-40" />
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 p-10 text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-muted">
+                <MessageSquare className="h-6 w-6 text-primary" />
               </div>
-              <div className="max-w-xs space-y-2">
-                <h3 className="font-sans font-bold text-xl text-[#0F172A]">Select a User</h3>
-                <p className="font-sans text-slate-400 text-[15px]">
-                  Choose a user from the left panel to moderate their reviews and messages.
+              <div className="max-w-sm space-y-1">
+                <h3 className="font-heading text-base font-semibold text-foreground">
+                  Select a user
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Choose a user from the left to view and moderate their reviews.
                 </p>
               </div>
             </div>
@@ -279,37 +306,45 @@ const Reviews = () => {
         </section>
       </div>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <DialogContent className="rounded-[24px] border-none shadow-2xl max-w-[400px]">
-          <DialogHeader className="space-y-3">
-            <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center mb-2">
-              <Trash2 className="w-6 h-6 text-rose-500" />
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
+              <Trash2 className="h-5 w-5 text-destructive" />
             </div>
-            <DialogTitle className="text-xl font-sans font-bold text-[#0F172A]">Delete Review?</DialogTitle>
-            <DialogDescription className="text-slate-500 font-sans text-[15px]">
-              This action cannot be undone. This review will be permanently removed from the platform.
+            <DialogTitle>Delete review?</DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. The review will be permanently removed
+              from the platform.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex gap-3 sm:gap-0 mt-6">
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button
+              type="button"
               variant="ghost"
               onClick={() => setDeleteId(null)}
-              className="flex-1 rounded-xl font-sans font-bold text-slate-500 hover:bg-slate-50"
             >
               Cancel
             </Button>
             <Button
+              type="button"
+              variant="destructive"
               onClick={() => deleteId && deleteMutation.mutate(deleteId)}
               disabled={deleteMutation.isPending}
-              className="flex-1 rounded-xl font-sans font-bold bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-100"
             >
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Deleting…
+                </>
+              ) : (
+                "Delete review"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </main>
+    </div>
   );
 };
 

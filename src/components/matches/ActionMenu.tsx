@@ -1,8 +1,11 @@
 import { MoreHorizontal, Eye, Edit2, Trash2 } from "lucide-react";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
 import { toast } from "sonner";
@@ -12,6 +15,7 @@ interface ActionMenuProps {
 }
 
 export default function ActionMenu({ matchId }: ActionMenuProps) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
@@ -29,35 +33,39 @@ export default function ActionMenu({ matchId }: ActionMenuProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="p-2 hover:bg-slate-100 rounded-full transition-colors outline-none">
-        <MoreHorizontal className="w-5 h-5 text-slate-400" />
+      <DropdownMenuTrigger
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/30"
+        aria-label="Match actions"
+      >
+        <MoreHorizontal className="h-4 w-4" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-[0_10px_40px_rgba(0,0,0,0.08)] min-w-[180px] p-2 bg-white z-[100]">
-        <DropdownMenuItem className="focus:bg-slate-50 rounded-xl py-2.5 px-4">
-          <Link to={`/match/view/${matchId}`} className="flex items-center gap-3 text-[13px] font-sans font-medium text-slate-600 w-full">
-            <Eye className="w-4 h-4 text-slate-400" />
-            View Match
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="focus:bg-slate-50 rounded-xl py-2.5 px-4">
-          <Link to={`/match/edit/${matchId}`} className="flex items-center gap-3 text-[13px] font-sans font-medium text-slate-600 w-full">
-            <Edit2 className="w-4 h-4 text-slate-400" />
-            Edit Match
-          </Link>
-        </DropdownMenuItem>
-
+      <DropdownMenuContent align="end" className="min-w-44">
         <DropdownMenuItem
-          className="focus:bg-slate-50 rounded-xl py-2.5 px-4 flex items-center gap-3 text-[13px] font-sans font-medium text-rose-500 cursor-pointer"
+          className="cursor-pointer"
+          onClick={() => navigate(`/match/view/${matchId}`)}
+        >
+          <Eye className="h-4 w-4" />
+          View match
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => navigate(`/match/edit/${matchId}`)}
+        >
+          <Edit2 className="h-4 w-4" />
+          Edit match
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          variant="destructive"
+          className="cursor-pointer"
           onSelect={(e) => {
             e.preventDefault();
-            if (window.confirm("Are you sure you want to delete this match?")) {
+            if (window.confirm("Delete this match? This cannot be undone.")) {
               deleteMutation.mutate();
             }
           }}
         >
-          <Trash2 className="w-4 h-4 text-rose-400" />
-          Delete Match
+          <Trash2 className="h-4 w-4" />
+          Delete match
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

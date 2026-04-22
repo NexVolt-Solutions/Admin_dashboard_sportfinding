@@ -1,12 +1,16 @@
 import { useState, useMemo, useCallback } from "react";
-import { Search, ChevronDown, Loader2, ChevronLeft, ChevronRight, MapPin, Plus } from "lucide-react";
+import { Search, ChevronDown, Loader2, MapPin, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
-  Table, TableBody, TableHead, TableHeader, TableRow, TableCell
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCell,
 } from "@/components/ui/table";
 import UserRow from "@/components/tables/UserRow";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
@@ -17,18 +21,26 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Pagination } from "@/components/ui/pagination";
+import { useNavigate } from "react-router-dom";
 import type { AdminUserListResponse } from "@/types/dashboard";
 import CreateUserModal from "@/components/users/CreateUserModal";
 
-const sports = ["All", "Football", "Basketball", "Tennis", "Volleyball", "Cricket", "Padel"];
+const sports = [
+  "All",
+  "Football",
+  "Basketball",
+  "Cricket",
+  "Tennis",
+  "Volleyball",
+  "Badminton",
+];
 
 function getDateRange(filter: string): { date_from?: string; date_to?: string } {
   if (!filter) return {};
   const now = new Date();
   const to = now.toISOString().split("T")[0];
-  if (filter === "today") {
-    return { date_from: to, date_to: to };
-  }
+  if (filter === "today") return { date_from: to, date_to: to };
   if (filter === "week") {
     const from = new Date(now);
     from.setDate(from.getDate() - 7);
@@ -53,7 +65,14 @@ export default function Users() {
   const limit = 10;
 
   const { data, isLoading, isFetching } = useQuery<AdminUserListResponse>({
-    queryKey: ["users", searchTerm, sportFilter, dateFilter, locationFilter, page],
+    queryKey: [
+      "users",
+      searchTerm,
+      sportFilter,
+      dateFilter,
+      locationFilter,
+      page,
+    ],
     queryFn: async () => {
       const dateRange = getDateRange(dateFilter);
       const response = await apiClient.get("/api/v1/admin/users", {
@@ -63,8 +82,8 @@ export default function Users() {
           location: locationFilter || undefined,
           ...dateRange,
           page,
-          limit
-        }
+          limit,
+        },
       });
       return response.data;
     },
@@ -72,7 +91,7 @@ export default function Users() {
 
   const users = useMemo(() => data?.items || [], [data]);
   const total = data?.total || 0;
-  const totalPages = Math.ceil(total / limit);
+  const totalPages = Math.max(1, Math.ceil(total / limit));
 
   const handleReset = useCallback(() => {
     setSearchTerm("");
@@ -82,32 +101,39 @@ export default function Users() {
     setPage(1);
   }, []);
 
+  const isDefault =
+    !searchTerm && sportFilter === "All" && !dateFilter && !locationFilter;
+
   return (
     <div className="space-y-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-[32px] font-sans font-bold text-[#0F172A] leading-tight">User Management</h1>
-          <p className="text-[16px] text-slate-400 font-sans font-medium mt-1">{total} total users</p>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            Users
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {total.toLocaleString()} total user{total === 1 ? "" : "s"}
+          </p>
         </div>
-        <Button
-          onClick={() => setShowCreateModal(true)}
-          className="rounded-xl h-11 px-6 font-sans font-bold bg-[#60A5FA] hover:bg-blue-500 gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Create User
+        <Button type="button" onClick={() => setShowCreateModal(true)}>
+          <Plus className="h-4 w-4" />
+          Create user
         </Button>
       </header>
 
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-        <div className="relative w-full lg:w-[400px]">
+      <section
+        aria-label="Filters"
+        className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <div className="relative w-full lg:max-w-96">
           {isFetching ? (
-            <Loader2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary animate-spin" />
+            <Loader2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
           ) : (
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           )}
           <Input
-            placeholder="Search user by name or address..."
-            className="pl-12 bg-[#F8FAFC] border-slate-200 rounded-xl h-12 font-sans text-[15px] focus:ring-primary/20"
+            placeholder="Search users by name or email…"
+            className="pl-9"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -116,30 +142,30 @@ export default function Users() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-          <button
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             onClick={handleReset}
-            className={cn(
-              "px-8 py-2 rounded-xl text-[15px] font-sans font-bold whitespace-nowrap h-11 transition-all",
-              !searchTerm && sportFilter === "All" && !dateFilter && !locationFilter
-                ? "bg-[#60A5FA] text-white shadow-lg shadow-blue-100"
-                : "bg-white border border-slate-200 text-slate-400 hover:text-[#0F172A]"
-            )}
+            disabled={isDefault}
           >
-            All
-          </button>
+            Reset
+          </Button>
 
           <DropdownMenu>
-            <DropdownMenuTrigger className={cn(
-              "px-5 py-2 rounded-xl text-[15px] font-sans font-bold flex items-center gap-2 whitespace-nowrap h-11 transition-all border",
-              sportFilter !== "All"
-                ? "bg-[#60A5FA] text-white border-[#60A5FA]"
-                : "bg-white border-slate-200 text-slate-400 hover:text-[#0F172A]"
-            )}>
-              {sportFilter === "All" ? "Sports" : sportFilter}
-              <ChevronDown className="w-4 h-4 opacity-50" />
+            <DropdownMenuTrigger
+              className={cn(
+                "inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium shadow-xs outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/30",
+                sportFilter !== "All"
+                  ? "border-transparent bg-primary-muted text-primary"
+                  : "border-input bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              {sportFilter === "All" ? "Sport" : sportFilter}
+              <ChevronDown className="h-4 w-4 opacity-70" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 rounded-xl p-2">
+            <DropdownMenuContent align="end" className="min-w-44">
               {sports.map((sport) => (
                 <DropdownMenuItem
                   key={sport}
@@ -147,7 +173,7 @@ export default function Users() {
                     setSportFilter(sport);
                     setPage(1);
                   }}
-                  className="rounded-lg font-sans font-medium cursor-pointer"
+                  className="cursor-pointer"
                 >
                   {sport}
                 </DropdownMenuItem>
@@ -155,36 +181,34 @@ export default function Users() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <div className="relative group">
+          <div className="relative">
             <select
               value={dateFilter}
               onChange={(e) => {
                 setDateFilter(e.target.value);
                 setPage(1);
               }}
+              aria-label="Date created filter"
               className={cn(
-                "appearance-none px-5 py-2.5 rounded-xl text-[15px] font-sans font-bold pr-10 transition-all focus:outline-none border h-11",
-                dateFilter
-                  ? "bg-[#60A5FA] text-white border-[#60A5FA]"
-                  : "bg-white border-slate-200 text-slate-400 hover:text-[#0F172A]"
+                "h-9 appearance-none rounded-lg border border-input bg-card pl-3 pr-8 text-sm shadow-xs outline-none transition-colors hover:border-input/80 focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/30",
+                dateFilter ? "text-foreground" : "text-muted-foreground"
               )}
             >
-              <option value="" className="text-slate-900">Date Created</option>
-              <option value="today" className="text-slate-900">Today</option>
-              <option value="week" className="text-slate-900">This Week</option>
-              <option value="month" className="text-slate-900">This Month</option>
+              <option value="">Date created</option>
+              <option value="today">Today</option>
+              <option value="week">This week</option>
+              <option value="month">This month</option>
             </select>
-            <ChevronDown className={cn(
-              "absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none",
-              dateFilter ? "text-white" : "text-slate-400"
-            )} />
+            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </div>
 
           <div className="relative">
-            <MapPin className={cn(
-              "absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none",
-              locationFilter ? "text-white" : "text-slate-400"
-            )} />
+            <MapPin
+              className={cn(
+                "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2",
+                locationFilter ? "text-primary" : "text-muted-foreground"
+              )}
+            />
             <Input
               placeholder="Location"
               value={locationFilter}
@@ -192,156 +216,121 @@ export default function Users() {
                 setLocationFilter(e.target.value);
                 setPage(1);
               }}
-              className={cn(
-                "pl-10 w-40 rounded-xl text-[14px] font-sans font-bold h-11 border transition-all",
-                locationFilter
-                  ? "bg-[#60A5FA] text-white border-[#60A5FA] placeholder:text-white/70"
-                  : "bg-white border-slate-200 text-slate-400"
-              )}
+              className="h-9 w-40 pl-9"
             />
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="bg-white rounded-[24px] shadow-none border-none overflow-hidden p-6">
-        {/* Desktop Table */}
-        <div className="hidden md:block">
-          <Table>
-            <TableHeader className="bg-transparent">
-              <TableRow className="hover:bg-transparent border-slate-50">
-                <TableHead className="font-sans font-medium text-slate-400 text-[15px] h-14">Users</TableHead>
-                <TableHead className="font-sans font-medium text-slate-400 text-[15px] h-14">Email</TableHead>
-                <TableHead className="font-sans font-medium text-slate-400 text-[15px] h-14">Location</TableHead>
-                <TableHead className="font-sans font-medium text-slate-400 text-[15px] h-14">Matches</TableHead>
-                <TableHead className="font-sans font-medium text-slate-400 text-[15px] h-14 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading && users.length === 0 ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i} className="border-slate-50">
-                    <TableCell className="py-4">
-                      <div className="flex items-center gap-3">
-                        <Skeleton className="h-10 w-10 rounded-full" />
-                        <div className="space-y-2">
-                          <Skeleton className="h-4 w-24" />
-                          <Skeleton className="h-3 w-16" />
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-12" /></TableCell>
-                    <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto rounded-lg" /></TableCell>
-                  </TableRow>
-                ))
-              ) : !isLoading && users.length === 0 ? (
+      <section aria-label="Users list">
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center font-sans text-slate-400">
-                    No users found matching your criteria.
-                  </TableCell>
+                  <TableHead>User</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Matches</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ) : (
-                users.map((user) => (
-                  <UserRow key={user.id} user={user} />
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Mobile Cards */}
-        <div className="md:hidden divide-y divide-border">
-          {isLoading && users.length === 0 ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="p-4 space-y-4">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-4 w-1/2" />
-                    <Skeleton className="h-3 w-1/3" />
-                  </div>
-                </div>
-                <div className="flex justify-between">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-                <Skeleton className="h-9 w-full rounded-lg" />
-              </div>
-            ))
-          ) : !isLoading && users.length === 0 ? (
-            <div className="p-8 text-center font-sans text-slate-400">
-              No users found matching your criteria.
-            </div>
-          ) : (
-            users.map((user) => (
-              <div key={user.id} className="p-4 space-y-3 hover:bg-slate-50/80 transition-all duration-300 cursor-pointer group rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-sans font-bold text-primary">
-                    {user.full_name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-sans font-bold text-[#0F172A]">{user.full_name}</h4>
-                    <p className="text-xs text-slate-400">{user.email}</p>
-                  </div>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Location: {user.location}</span>
-                  <span className="text-slate-500">Matches: {user.matches}</span>
-                </div>
-                <Button
-                  variant="outline"
-                  className="w-full h-9 text-xs font-sans border-[#60A5FA] text-[#60A5FA] hover:bg-blue-50"
-                  onClick={() => navigate(`/users/${user.id}`)}
-                >
-                  View Profile
-                </Button>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* Pagination UI */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 py-6">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setPage(p => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="rounded-xl border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <Button
-                key={i}
-                variant={page === i + 1 ? "default" : "outline"}
-                size="sm"
-                onClick={() => setPage(i + 1)}
-                className={`w-10 h-10 rounded-xl font-sans font-bold transition-all ${
-                  page === i + 1
-                    ? "bg-[#60A5FA] text-white shadow-md shadow-blue-100 border-none"
-                    : "border-slate-200 text-slate-400 hover:border-primary/50"
-                }`}
-              >
-                {i + 1}
-              </Button>
-            ))}
+              </TableHeader>
+              <TableBody>
+                {isLoading && users.length === 0 ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i} className="border-border/60">
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Skeleton className="h-9 w-9 rounded-full" />
+                          <div className="flex flex-col gap-1.5">
+                            <Skeleton className="h-3.5 w-28" />
+                            <Skeleton className="h-3 w-16" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-3.5 w-36" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-3.5 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-3.5 w-10" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="ml-auto h-8 w-8 rounded-md" />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : users.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={5}
+                      className="h-32 text-center text-sm text-muted-foreground"
+                    >
+                      No users found for your filters.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  users.map((user) => <UserRow key={user.id} user={user} />)
+                )}
+              </TableBody>
+            </Table>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-            className="rounded-xl border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </Button>
+
+          <div className="divide-y divide-border/60 md:hidden">
+            {isLoading && users.length === 0 ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="space-y-3 p-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-9 w-9 rounded-full" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton className="h-3.5 w-1/2" />
+                      <Skeleton className="h-3 w-1/3" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-8 w-full rounded-md" />
+                </div>
+              ))
+            ) : users.length === 0 ? (
+              <div className="p-8 text-center text-sm text-muted-foreground">
+                No users found for your filters.
+              </div>
+            ) : (
+              users.map((user) => (
+                <button
+                  key={user.id}
+                  type="button"
+                  onClick={() => navigate(`/users/${user.id}`)}
+                  className="flex w-full flex-col gap-3 p-4 text-left transition-colors hover:bg-muted/40"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-muted text-sm font-semibold text-primary">
+                      {user.full_name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {user.full_name}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{user.location || "—"}</span>
+                    <span className="tabular-nums">
+                      {user.matches} matches
+                    </span>
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
         </div>
-      )}
+      </section>
+
+      <Pagination page={page} totalPages={totalPages} onChange={setPage} />
 
       <CreateUserModal
         isOpen={showCreateModal}

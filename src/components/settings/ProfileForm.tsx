@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
 import { useForm } from "@/hooks/useForm";
 import FormInput from "./FormInput";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/lib/api-client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-
-interface AdminAccount {
-  full_name: string;
-  email: string;
-}
+import { cn } from "@/lib/utils";
+import type { AdminAccountResponse } from "@/types/dashboard";
 
 export default function ProfileForm() {
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data: account, isLoading } = useQuery<AdminAccount>({
+  const { data: account, isLoading } = useQuery<AdminAccountResponse>({
     queryKey: ["admin-account"],
     queryFn: async () => {
       const res = await apiClient.get("/api/v1/admin/account");
@@ -58,7 +55,9 @@ export default function ProfileForm() {
       if (Array.isArray(detail)) {
         toast.error(detail[0]?.msg || "Failed to update profile");
       } else {
-        toast.error(typeof detail === "string" ? detail : "Failed to update profile");
+        toast.error(
+          typeof detail === "string" ? detail : "Failed to update profile"
+        );
       }
     } finally {
       setIsSaving(false);
@@ -67,16 +66,16 @@ export default function ProfileForm() {
 
   if (isLoading) {
     return (
-      <div className="space-y-8 max-w-4xl">
+      <div className="max-w-3xl space-y-8">
         <div className="flex items-start justify-between">
-          <Skeleton className="w-[120px] h-[120px] rounded-[32px]" />
-          <Skeleton className="w-32 h-12 rounded-xl" />
+          <Skeleton className="h-24 w-24 rounded-2xl" />
+          <Skeleton className="h-9 w-28 rounded-lg" />
         </div>
-        <div className="space-y-6">
-          <Skeleton className="h-7 w-48" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Skeleton className="h-12 w-full rounded-xl" />
-            <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-48" />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Skeleton className="h-10 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded-lg" />
           </div>
         </div>
       </div>
@@ -84,40 +83,41 @@ export default function ProfileForm() {
   }
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      <div className="flex items-start justify-between">
-        <div className="relative">
-          <div className={cn(
-            "w-[120px] h-[120px] rounded-[32px] overflow-hidden bg-slate-50 border border-slate-100 transition-all flex items-center justify-center",
-            isEditing && "ring-2 ring-blue-500/20 border-blue-500/50"
-          )}>
-            <img
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(account?.full_name || "A")}&size=120&background=60A5FA&color=fff`}
-              alt="Avatar"
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          </div>
-        </div>
-        <button
-          onClick={() => setIsEditing(!isEditing)}
+    <div className="max-w-3xl space-y-8">
+      <div className="flex items-start justify-between gap-4">
+        <div
           className={cn(
-            "px-8 h-12 rounded-xl font-sans font-bold text-[15px] border transition-all",
-            isEditing
-              ? "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200"
-              : "border-[#60A5FA] text-[#60A5FA] hover:bg-blue-50"
+            "h-24 w-24 overflow-hidden rounded-2xl bg-muted ring-1 ring-border transition-all",
+            isEditing && "ring-2 ring-primary/40"
           )}
         >
-          {isEditing ? "Cancel" : "Edit Profile"}
-        </button>
+          <img
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+              account?.full_name || "A"
+            )}&size=120&background=3EA7FD&color=fff`}
+            alt="Avatar"
+            className="h-full w-full object-cover"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <Button
+          type="button"
+          variant={isEditing ? "ghost" : "outline"}
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          {isEditing ? "Cancel" : "Edit profile"}
+        </Button>
       </div>
 
-      <div className="space-y-6">
-        <h3 className="text-[22px] font-sans font-bold text-[#0F172A]">Personal Information</h3>
+      <section className="space-y-4">
+        <h3 className="font-heading text-base font-semibold text-foreground">
+          Personal information
+        </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormInput
-            label="Full Name"
+            label="Full name"
             name="fullName"
             value={values.fullName}
             onChange={handleChange}
@@ -134,21 +134,24 @@ export default function ProfileForm() {
           />
         </div>
 
-        <div className="flex justify-end pt-4">
-          <button
+        <div className="flex justify-end pt-2">
+          <Button
+            type="button"
+            size="lg"
             onClick={() => handleSubmit(onSave)}
             disabled={!isEditing || !isDirty || isSaving}
-            className={cn(
-              "px-10 py-3 rounded-xl font-sans font-bold text-[16px] text-white transition-all shadow-lg",
-              (!isEditing || !isDirty || isSaving)
-                ? "bg-[#60A5FA]/50 cursor-not-allowed shadow-none"
-                : "bg-[#60A5FA] hover:bg-blue-500 active:scale-[0.98] shadow-blue-100"
-            )}
           >
-            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
-          </button>
+            {isSaving ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Saving…
+              </>
+            ) : (
+              "Save changes"
+            )}
+          </Button>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

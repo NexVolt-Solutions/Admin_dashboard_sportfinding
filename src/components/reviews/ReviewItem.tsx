@@ -1,4 +1,5 @@
 import { Trash2, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ReviewItemProps {
   reviewerName: string;
@@ -22,38 +23,49 @@ function formatDate(iso: string) {
   return date.toLocaleDateString();
 }
 
-export default function ReviewItem({ reviewerName, rating, comment, createdAt, onDelete }: ReviewItemProps) {
+export default function ReviewItem({
+  reviewerName,
+  rating,
+  comment,
+  createdAt,
+  onDelete,
+}: ReviewItemProps) {
   return (
-    <article className="group p-4 rounded-2xl border border-slate-100 bg-white hover:bg-slate-50 transition-all duration-200">
-      <div className="flex items-start justify-between gap-6">
-        <div className="flex-1 space-y-2">
-          <div className="flex items-center gap-3">
-            <h5 className="font-sans font-bold text-[16px] text-[#0F172A]">
+    <article className="group rounded-xl border border-border bg-card p-5 shadow-xs transition-shadow hover:shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <h5 className="text-sm font-semibold text-foreground">
               {reviewerName}
             </h5>
             <div className="flex items-center gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-3.5 h-3.5 ${i < rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`}
+                  className={cn(
+                    "h-3.5 w-3.5",
+                    i < rating
+                      ? "fill-warning text-warning"
+                      : "fill-muted text-muted"
+                  )}
                 />
               ))}
             </div>
-            <time className="text-[13px] font-sans font-medium text-slate-400">
+            <span className="text-xs text-muted-foreground">·</span>
+            <time className="text-xs text-muted-foreground">
               {formatDate(createdAt)}
             </time>
           </div>
-          <p className="font-sans text-[15px] text-slate-500 font-medium leading-relaxed">
-            {comment}
-          </p>
+          <p className="text-sm leading-relaxed text-foreground/80">{comment}</p>
         </div>
 
         <button
+          type="button"
           onClick={onDelete}
-          className="p-2.5 rounded-xl text-rose-300 hover:text-rose-500 hover:bg-rose-50 transition-all duration-200"
           aria-label="Delete review"
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-[opacity,color,background-color] hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus-visible:opacity-100"
         >
-          <Trash2 className="w-5 h-5" />
+          <Trash2 className="h-4 w-4" />
         </button>
       </div>
     </article>

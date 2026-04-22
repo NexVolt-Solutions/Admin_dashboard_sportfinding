@@ -1,49 +1,32 @@
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import type { SupportRequestStatus } from "@/types/dashboard";
 
-export type TicketStatus = "Open" | "Closed" | "Solved";
+export type TicketStatus = SupportRequestStatus;
 
 interface StatusBadgeProps {
-  status: TicketStatus;
-  onStatusChange: (newStatus: TicketStatus) => void;
+  status: SupportRequestStatus;
 }
 
-const statusStyles: Record<TicketStatus, string> = {
-  Solved: "text-[#10B981] bg-[#DCFCE7]",
-  Closed: "text-[#EF4444] bg-[#FEE2E2]",
-  Open: "text-[#60A5FA] bg-[#E0F2FE]",
+const statusStyles: Record<SupportRequestStatus, string> = {
+  Open: "bg-primary-muted text-primary",
+  Resolved: "bg-success/10 text-success",
 };
 
-export default function StatusBadge({ status, onStatusChange }: StatusBadgeProps) {
+export default function StatusBadge({ status }: StatusBadgeProps) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
+    <span
+      className={cn(
+        "inline-flex h-6 items-center rounded-md px-2 text-xs font-medium",
+        statusStyles[status]
+      )}
+    >
+      <span
         className={cn(
-          "inline-flex items-center gap-2 px-5 py-2 rounded-xl text-[14px] font-sans font-bold transition-all hover:opacity-80 outline-none",
-          statusStyles[status]
+          "mr-1.5 inline-block h-1.5 w-1.5 rounded-full",
+          status === "Open" ? "bg-primary" : "bg-success"
         )}
-      >
-        {status}
-        <ChevronDown className="w-4 h-4 opacity-50" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-32">
-        <DropdownMenuItem onClick={() => onStatusChange("Open")} className="font-sans text-sm">
-          Open
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onStatusChange("Solved")} className="font-sans text-sm">
-          Solved
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onStatusChange("Closed")} className="font-sans text-sm">
-          Closed
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      />
+      {status}
+    </span>
   );
 }

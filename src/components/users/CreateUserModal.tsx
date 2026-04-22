@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -19,7 +20,10 @@ interface CreateUserModalProps {
   onClose: () => void;
 }
 
-export default function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
+export default function CreateUserModal({
+  isOpen,
+  onClose,
+}: CreateUserModalProps) {
   const queryClient = useQueryClient();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -54,7 +58,9 @@ export default function CreateUserModal({ isOpen, onClose }: CreateUserModalProp
       if (Array.isArray(message)) {
         toast.error(message[0]?.msg || "Failed to create user");
       } else {
-        toast.error(typeof message === "string" ? message : "Failed to create user");
+        toast.error(
+          typeof message === "string" ? message : "Failed to create user"
+        );
       }
     },
   });
@@ -63,74 +69,74 @@ export default function CreateUserModal({ isOpen, onClose }: CreateUserModalProp
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] rounded-3xl p-8">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-sans font-bold text-[#0F172A]">
-            Create New User
-          </DialogTitle>
+          <DialogTitle>Create user</DialogTitle>
+          <DialogDescription>
+            Add a new user to the platform. They'll receive sign-in credentials.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 py-4">
-          <div className="space-y-2">
-            <Label className="text-sm font-sans font-semibold text-slate-500">Full Name</Label>
+        <div className="space-y-4 py-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="create-fullname">Full name</Label>
             <Input
+              id="create-fullname"
               placeholder="Enter full name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="rounded-xl h-12 border-slate-200 focus:ring-primary/20"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-sans font-semibold text-slate-500">Email</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="create-email">Email</Label>
             <Input
+              id="create-email"
               type="email"
-              placeholder="Enter email address"
+              placeholder="name@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded-xl h-12 border-slate-200 focus:ring-primary/20"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-sans font-semibold text-slate-500">Password</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="create-password">Password</Label>
             <Input
+              id="create-password"
               type="password"
-              placeholder="Enter password"
+              placeholder="Minimum 8 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="rounded-xl h-12 border-slate-200 focus:ring-primary/20"
             />
           </div>
 
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex cursor-pointer items-center gap-2.5">
             <input
               type="checkbox"
               checked={isAdmin}
               onChange={(e) => setIsAdmin(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-300 text-[#60A5FA] focus:ring-[#60A5FA]/20"
+              className="h-4 w-4 rounded border-input text-primary accent-primary focus-visible:ring-2 focus-visible:ring-ring/30"
             />
-            <span className="text-sm font-sans font-semibold text-slate-500">Admin privileges</span>
+            <span className="text-sm text-foreground">Grant admin privileges</span>
           </label>
         </div>
 
-        <DialogFooter className="flex gap-3 sm:justify-end">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            className="rounded-xl h-12 px-8 font-sans font-bold border-slate-200"
-          >
+        <DialogFooter>
+          <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
           <Button
+            type="button"
             onClick={() => createMutation.mutate()}
             disabled={createMutation.isPending || !canSubmit}
-            className="rounded-xl h-12 px-8 font-sans font-bold bg-[#60A5FA] hover:bg-blue-500"
           >
             {createMutation.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Creating…
+              </>
             ) : (
-              "Create User"
+              "Create user"
             )}
           </Button>
         </DialogFooter>
