@@ -7,7 +7,7 @@ import { DEV_BYPASS_TOKEN } from "@/lib/api-client";
 const LANDING_LOGIN_URL =
   (import.meta.env.VITE_LANDING_LOGIN_URL as string | undefined) ??
   (import.meta.env.DEV
-    ? "http://localhost:5173/login"
+    ? "http://localhost:3000/login"
     : "https://sportfinding.com/login");
 
 const IS_DEV = import.meta.env.DEV;
