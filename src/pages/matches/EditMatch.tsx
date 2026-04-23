@@ -231,7 +231,7 @@ export default function EditMatch() {
               <Textarea
                 value={form.description}
                 onChange={(e) => update("description", e.target.value)}
-                className="min-h-32 resize-none"
+                className="min-h-[128px] resize-none"
               />
             </div>
           </Section>

@@ -26,7 +26,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
       .toUpperCase() || "AD";
 
   return (
-    <header className="fixed top-0 right-0 left-0 lg:left-65 z-40 flex h-16 items-center justify-between border-b border-border bg-card/80 px-4 backdrop-blur-md sm:px-6 lg:justify-end">
+    <header className="fixed top-0 right-0 left-0 lg:left-64 z-40 flex h-16 items-center justify-between border-b border-border bg-card/80 px-4 sm:px-6 lg:px-6 backdrop-blur-md lg:justify-end">
       <button
         type="button"
         onClick={onMenuClick}
@@ -38,14 +38,14 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
       <div className="flex items-center gap-3">
         <div className="hidden text-right sm:block">
-          <p className="text-sm font-semibold text-foreground leading-tight">
+          <p className="text-sm sm:text-base font-semibold text-foreground leading-tight">
             {account?.full_name || "Admin"}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {account?.email || ""}
           </p>
         </div>
-        <Avatar className="h-9 w-9 ring-1 ring-border">
+        <Avatar className="h-9 w-9 sm:h-10 sm:w-10 ring-1 ring-border">
           <AvatarImage
             src={
               account

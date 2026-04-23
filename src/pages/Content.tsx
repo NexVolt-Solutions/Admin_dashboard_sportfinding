@@ -100,7 +100,7 @@ const Content = () => {
         aria-label="Controls"
         className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
       >
-        <div className="relative w-full lg:max-w-96">
+        <div className="relative w-full lg:max-w-md">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search content…"

@@ -31,7 +31,7 @@ const FormInput = React.memo(({
 }: FormInputProps) => {
   const fieldClasses = cn(
     baseField,
-    isTextArea ? "min-h-35 resize-none py-2.5 leading-relaxed" : "h-10 py-2",
+    isTextArea ? "min-h-[140px] resize-none py-2.5 leading-relaxed" : "h-10 py-2",
     error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
   );
 

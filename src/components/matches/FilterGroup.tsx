@@ -32,7 +32,7 @@ export default function FilterGroup({
 
   return (
     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-      <div className="relative w-full lg:max-w-96">
+      <div className="relative w-full lg:max-w-md">
         {isFetching ? (
           <Loader2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
         ) : (
@@ -64,12 +64,12 @@ export default function FilterGroup({
               name ? "text-primary" : "text-muted-foreground"
             )}
           />
-          <Input
-            placeholder="Host name"
-            value={name}
-            onChange={(e) => onNameChange(e.target.value)}
-            className="h-9 w-40 pl-9"
-          />
+                 <Input
+                   placeholder="Host name"
+                   value={name}
+                   onChange={(e) => onNameChange(e.target.value)}
+                   className="h-9 w-full sm:w-40 pl-9"
+                 />
         </div>
 
         <div className="relative">
@@ -79,12 +79,12 @@ export default function FilterGroup({
               location ? "text-primary" : "text-muted-foreground"
             )}
           />
-          <Input
-            placeholder="Location"
-            value={location}
-            onChange={(e) => onLocationChange(e.target.value)}
-            className="h-9 w-40 pl-9"
-          />
+                 <Input
+                   placeholder="Location"
+                   value={location}
+                   onChange={(e) => onLocationChange(e.target.value)}
+                   className="h-9 w-full sm:w-40 pl-9"
+                 />
         </div>
 
         <div className="relative">

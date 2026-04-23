@@ -120,7 +120,7 @@ const UserRow = ({ user }: UserRowProps) => {
           >
             <MoreHorizontal className="h-4 w-4" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-40">
+          <DropdownMenuContent align="end" className="min-w-[160px]">
             <DropdownMenuItem
               onClick={() => navigate(`/users/${user.id}`)}
               className="cursor-pointer"

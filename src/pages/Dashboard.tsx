@@ -73,19 +73,19 @@ const Dashboard = () => {
         </p>
       </header>
 
-      {/* Key metrics: stat cards — reduced height (h-20) */}
+      {/* Key metrics: stat cards — responsive grid */}
       <section
         aria-label="Key metrics"
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
       >
         {isLoading && !stats
           ? [0, 1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-20 w-full rounded-xl" />
+              <Skeleton key={i} className="h-24 w-full rounded-xl" />
             ))
           : (
               <>
                 <StatCard
-                  className="h-30"
+                  className="h-24 sm:h-28"
                   icon={Users}
                   label="Total Users"
                   value={(stats?.total_users ?? 0).toLocaleString()}
@@ -93,7 +93,7 @@ const Dashboard = () => {
                   isPositive={totalUsersGrowth.isPositive}
                 />
                 <StatCard
-                  className="h-30"
+                  className="h-24 sm:h-28"
                   icon={Trophy}
                   label="Total Matches"
                   value={(stats?.total_matches ?? 0).toLocaleString()}
@@ -101,7 +101,7 @@ const Dashboard = () => {
                   isPositive={totalMatchesGrowth.isPositive}
                 />
                 <StatCard
-                  className="h-30"
+                  className="h-24 sm:h-28"
                   icon={Zap}
                   label="Active Matches"
                   value={(stats?.active_matches ?? 0).toLocaleString()}
@@ -109,7 +109,7 @@ const Dashboard = () => {
                   isPositive={activeMatchesGrowth.isPositive}
                 />
                 <StatCard
-                  className="h-30"
+                  className="h-24 sm:h-28"
                   icon={UserPlus}
                   label="New Users Today"
                   value={(stats?.new_users_today ?? 0).toLocaleString()}

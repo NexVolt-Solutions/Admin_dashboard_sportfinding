@@ -23,9 +23,10 @@ function Card({ className, size = "default", ...props }: CardProps) {
         // original base classes preserved
         "group/card flex flex-col gap-6 overflow-hidden rounded-xl border border-border bg-card py-6 text-sm text-card-foreground shadow-sm transition-shadow has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         // ONLY vertical size variants (min-height / max-height)
-        size === "sm" && "min-h-30 max-h-55",
-        size === "default" && "min-h-45 max-h-80",
-        size === "lg" && "min-h-60 max-h-105",
+        // using explicit pixel values to avoid reliance on non-standard utility classes
+        size === "sm" && "min-h-[120px] max-h-[220px]",
+        size === "default" && "min-h-[180px] max-h-[320px]",
+        size === "lg" && "min-h-[240px] max-h-[420px]",
         className
       )}
       {...props}

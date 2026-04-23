@@ -79,7 +79,7 @@ const Support = () => {
             </header>
 
             {/* Search */}
-            <section aria-label="Search" className="relative w-full lg:max-w-96">
+            <section aria-label="Search" className="relative w-full lg:max-w-md">
               {isFetching ? (
                 <Loader2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
               ) : (

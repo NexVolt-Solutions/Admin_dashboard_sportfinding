@@ -44,7 +44,7 @@ const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
         <CardTitle>Matches Per Day</CardTitle>
         <CardDescription>Last 7 days</CardDescription>
       </CardHeader>
-      <CardContent className="h-80">
+      <CardContent className="h-64 md:h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={normalized}

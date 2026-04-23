@@ -125,7 +125,7 @@ export default function Users() {
         aria-label="Filters"
         className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
       >
-        <div className="relative w-full lg:max-w-96">
+        <div className="relative w-full lg:max-w-md">
           {isFetching ? (
             <Loader2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
           ) : (
@@ -165,7 +165,7 @@ export default function Users() {
               {sportFilter === "All" ? "Sport" : sportFilter}
               <ChevronDown className="h-4 w-4 opacity-70" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-44">
+            <DropdownMenuContent align="end" className="min-w-[176px]">
               {sports.map((sport) => (
                 <DropdownMenuItem
                   key={sport}
@@ -216,7 +216,7 @@ export default function Users() {
                 setLocationFilter(e.target.value);
                 setPage(1);
               }}
-              className="h-9 w-40 pl-9"
+              className="h-9 w-full sm:w-40 pl-9"
             />
           </div>
         </div>

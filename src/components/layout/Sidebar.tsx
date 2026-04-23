@@ -88,18 +88,20 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-50 flex h-screen w-65 flex-col border-r border-border bg-card transition-transform duration-300 lg:translate-x-0",
+        "fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-border bg-card transition-transform duration-300 lg:translate-x-0",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}
+      aria-hidden={!isOpen}
+      role="navigation"
     >
-      <div className="flex h-16 items-center justify-between border-b border-border px-4">
+      <div className="flex h-16 items-center justify-between border-b border-border px-4 lg:px-6">
         <Link to="/" className="flex items-center gap-2 min-w-0">
           <img
             src={Logo}
             alt=""
             className="h-9 w-9 shrink-0 object-contain"
           />
-          <span className="font-heading text-lg font-bold tracking-tight text-foreground truncate">
+          <span className="font-heading text-base sm:text-lg font-bold tracking-tight text-foreground truncate">
             SportFinding
           </span>
         </Link>

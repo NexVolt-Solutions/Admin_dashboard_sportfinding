@@ -34,7 +34,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-105 text-center">
+      <div className="w-full max-w-md text-center">
         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md">
           <Trophy className="h-7 w-7" strokeWidth={2} />
         </div>

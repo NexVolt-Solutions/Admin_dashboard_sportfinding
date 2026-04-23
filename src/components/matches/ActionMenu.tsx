@@ -39,7 +39,7 @@ export default function ActionMenu({ matchId }: ActionMenuProps) {
       >
         <MoreHorizontal className="h-4 w-4" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-44">
+      <DropdownMenuContent align="end" className="min-w-[176px]">
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={() => navigate(`/match/view/${matchId}`)}

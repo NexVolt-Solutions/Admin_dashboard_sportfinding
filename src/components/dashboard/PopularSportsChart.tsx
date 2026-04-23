@@ -45,7 +45,7 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[200px_1fr]">
-          <div className="relative h-50">
+          <div className="relative h-48 md:h-56 lg:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie

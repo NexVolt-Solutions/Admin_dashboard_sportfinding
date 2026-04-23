@@ -90,13 +90,29 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Responsive root font-size for modest scaling across viewports */
+    font-size: clamp(14px, 0.9rem + 0.6vw, 16px);
+    -webkit-text-size-adjust: 100%;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
-  h1,
-  h2,
-  h3,
+  /* Heading scale (mobile-first, clamps to sensible desktop sizes) */
+  h1 {
+    @apply font-heading tracking-tight;
+    font-size: clamp(1.25rem, 2.4vw + 1rem, 2rem);
+    line-height: 1.1;
+  }
+  h2 {
+    @apply font-heading tracking-tight;
+    font-size: clamp(1.125rem, 1.7vw + 0.9rem, 1.5rem);
+    line-height: 1.12;
+  }
+  h3 {
+    @apply font-heading tracking-tight;
+    font-size: clamp(1rem, 1.2vw + 0.8rem, 1.25rem);
+    line-height: 1.18;
+  }
   h4,
   h5,
   h6 {

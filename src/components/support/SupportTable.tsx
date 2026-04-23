@@ -69,7 +69,7 @@ export default function SupportTable({ tickets, onView }: SupportTableProps) {
                 >
                   {ticket.user_id.slice(0, 8)}
                 </TableCell>
-                <TableCell className="max-w-90 truncate text-sm font-medium text-foreground">
+                <TableCell className="max-w-[360px] truncate text-sm font-medium text-foreground">
                   {ticket.subject}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
