@@ -28,9 +28,9 @@ export default function Settings() {
       </header>
 
       {/* Layout */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[240px_1fr] items-start">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[240px_1fr] items-stretch">
         {/* Sidebar card (taller) */}
-        <aside className="rounded-xl border border-border bg-card shadow-sm p-3 flex flex-col gap-1 h-full min-h-[450px]">
+        <aside className="rounded-xl border border-border bg-card shadow-sm p-3 flex flex-col gap-1 min-h-[450px]">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -61,8 +61,8 @@ export default function Settings() {
           })}
         </aside>
 
-        {/* Active form card */}
-        <section className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
+        {/* Active form card (matches left height) */}
+        <section className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8 h-full overflow-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -70,6 +70,7 @@ export default function Settings() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
+              className="h-full"
             >
               {activeTab === "profile" ? <ProfileForm /> : <SecurityForm />}
             </motion.div>
