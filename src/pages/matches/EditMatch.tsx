@@ -216,7 +216,7 @@ export default function EditMatch() {
         </Button>
       </header>
 
-      <Card>
+      <Card size="lg" className="max-h-none">
         <CardContent className="space-y-8 p-6 sm:p-8">
           <Section title="Match details">
             <div className="space-y-2">
