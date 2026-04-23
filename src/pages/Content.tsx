@@ -1,4 +1,3 @@
-// src/components/content/Content.tsx
 import { useState, useMemo, useEffect, memo } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -117,33 +116,27 @@ const Content = () => {
         />
       </section>
 
-      {/* Editor card: decreased max height and scrollable content */}
       <section
         aria-label="Editor"
-        className="rounded-xl border border-border bg-card p-0 shadow-sm sm:p-0"
+        className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8"
       >
-        <div className="p-6 sm:p-8 max-h-[56vh] md:max-h-[48vh] overflow-hidden">
-          {isLoading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-7 w-64" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-            </div>
-          ) : (
-            // Inner scrollable area for editor content
-            <div className="h-full overflow-auto pr-2">
-              <EditorView
-                title={data?.title || sectionLabels[activeTab]}
-                content={currentContent}
-                onChange={setCurrentContent}
-                searchQuery={search}
-              />
-            </div>
-          )}
-        </div>
+        {isLoading ? (
+          <div className="space-y-3">
+            <Skeleton className="h-7 w-64" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+          </div>
+        ) : (
+          <EditorView
+            title={data?.title || sectionLabels[activeTab]}
+            content={currentContent}
+            onChange={setCurrentContent}
+            searchQuery={search}
+          />
+        )}
       </section>
 
       <SaveAction
