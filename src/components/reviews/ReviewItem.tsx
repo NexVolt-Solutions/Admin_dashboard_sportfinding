@@ -63,7 +63,7 @@ export default function ReviewItem({
           type="button"
           onClick={onDelete}
           aria-label="Delete review"
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-[opacity,color,background-color] hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus-visible:opacity-100"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-[opacity,color,background-color] hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-4 focus-visible:ring-ring/30"
         >
           <Trash2 className="h-4 w-4" />
         </button>

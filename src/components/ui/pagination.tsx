@@ -58,13 +58,13 @@ export function Pagination({
             …
           </span>
         ) : (
-          <button
+              <button
             key={p}
             type="button"
             onClick={() => onChange(p)}
             aria-current={page === p ? "page" : undefined}
             className={cn(
-              "inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30",
+              "inline-flex h-8 min-w-[32px] items-center justify-center rounded-md px-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30",
               page === p
                 ? "bg-primary-muted text-primary"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"

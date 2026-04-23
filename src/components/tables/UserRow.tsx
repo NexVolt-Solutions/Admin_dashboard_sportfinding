@@ -113,7 +113,7 @@ const UserRow = ({ user }: UserRowProps) => {
         <DropdownMenu>
           <DropdownMenuTrigger
             className={cn(
-              "inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors",
+              "inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors",
               "hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30"
             )}
             aria-label="Row actions"

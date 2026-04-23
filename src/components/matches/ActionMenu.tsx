@@ -34,7 +34,7 @@ export default function ActionMenu({ matchId }: ActionMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/30"
+        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/30"
         aria-label="Match actions"
       >
         <MoreHorizontal className="h-4 w-4" />

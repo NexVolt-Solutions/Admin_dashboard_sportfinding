@@ -248,7 +248,7 @@ const ViewMatch = () => {
             <h3 className="font-heading text-base font-semibold text-foreground">
               Participants
             </h3>
-            <div className="max-h-120 space-y-2 overflow-y-auto">
+            <div className="max-h-[320px] space-y-2 overflow-y-auto">
               {match.participants.length === 0 ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">
                   No participants yet
