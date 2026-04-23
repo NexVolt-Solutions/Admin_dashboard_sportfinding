@@ -31,6 +31,12 @@ const tooltipStyle = {
 };
 
 const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
+  const defaultData: PopularSport[] = [
+    { sport: "Football", count: 0, percentage: 0 },
+    { sport: "Basketball", count: 0, percentage: 0 },
+    { sport: "Cricket", count: 0, percentage: 0 },
+  ];
+  const list = data && data.length > 0 ? data : defaultData;
   return (
     <Card>
       <CardHeader>
@@ -43,7 +49,7 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={data}
+                  data={list}
                   cx="50%"
                   cy="50%"
                   innerRadius={62}
@@ -54,7 +60,7 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
                   stroke="var(--color-card)"
                   strokeWidth={3}
                 >
-                  {data.map((_, index) => (
+                  {list.map((_, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
@@ -67,7 +73,7 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
           </div>
 
           <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            {data.map((item, index) => (
+            {list.map((item, index) => (
               <li
                 key={item.sport}
                 className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted/40"

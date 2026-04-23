@@ -31,6 +31,13 @@ const tooltipStyle = {
 };
 
 const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
+  // normalize to a 7-day series (Mon - Sun) and default missing days to 0
+  const daysOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const normalized = daysOrder.map((d) => {
+    const found = data.find((x) => x.day && x.day.toLowerCase().startsWith(d.toLowerCase()));
+    return { day: d, count: found ? found.count : 0 };
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -40,7 +47,7 @@ const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
       <CardContent className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={data}
+            data={normalized}
             margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
           >
             <XAxis
@@ -51,12 +58,9 @@ const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
               dy={12}
             />
             <YAxis axisLine={false} tickLine={false} tick={tickStyle} />
-            <Tooltip
-              cursor={false}
-              contentStyle={tooltipStyle}
-            />
+            <Tooltip cursor={false} contentStyle={tooltipStyle} />
             <Bar dataKey="count" radius={[8, 8, 8, 8]} barSize={20}>
-              {data.map((_, index) => (
+              {normalized.map((_, index) => (
                 <Cell key={`cell-${index}`} fill="var(--color-chart-3)" />
               ))}
             </Bar>

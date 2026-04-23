@@ -32,6 +32,36 @@ const Dashboard = () => {
     },
   });
 
+  // compute simple daily progress percentages (safe defaults)
+  const matchesPerDay = stats?.matches_per_day ?? [];
+
+  const percentChange = (current: number, previous: number) => {
+    if (previous <= 0) return { label: "0%", isPositive: true };
+    const raw = ((current - previous) / previous) * 100;
+    const rounded = Math.round(raw);
+    return { label: `${rounded > 0 ? "+" : ""}${rounded}%`, isPositive: rounded >= 0 };
+  };
+
+  // Total users daily progress approximated by today's new users vs previous total
+  const totalUsers = stats?.total_users ?? 0;
+  const newUsersToday = stats?.new_users_today ?? 0;
+  const prevTotalUsers = Math.max(0, totalUsers - newUsersToday);
+  const totalUsersGrowth = prevTotalUsers > 0
+    ? { label: `${Math.round((newUsersToday / prevTotalUsers) * 100)}%`, isPositive: newUsersToday >= 0 }
+    : { label: "0%", isPositive: true };
+
+  // Total matches growth using matches_per_day (compare last two days)
+  let totalMatchesGrowth = { label: "0%", isPositive: true };
+  if (matchesPerDay.length >= 2) {
+    const last = matchesPerDay[matchesPerDay.length - 1].count ?? 0;
+    const prev = matchesPerDay[matchesPerDay.length - 2].count ?? 0;
+    totalMatchesGrowth = percentChange(last, prev);
+  }
+
+  // Active matches and new users today: default to 0% unless we have better data
+  const activeMatchesGrowth = { label: "0%", isPositive: true };
+  const newUsersGrowth = totalUsersGrowth;
+
   return (
     <div className="space-y-4">
       <header className="flex flex-col gap-1">
@@ -58,25 +88,33 @@ const Dashboard = () => {
                   className="h-30"
                   icon={Users}
                   label="Total Users"
-                  value={stats?.total_users.toLocaleString() || "0"}
+                  value={(stats?.total_users ?? 0).toLocaleString()}
+                  growth={totalUsersGrowth.label}
+                  isPositive={totalUsersGrowth.isPositive}
                 />
                 <StatCard
                   className="h-30"
                   icon={Trophy}
                   label="Total Matches"
-                  value={stats?.total_matches.toLocaleString() || "0"}
+                  value={(stats?.total_matches ?? 0).toLocaleString()}
+                  growth={totalMatchesGrowth.label}
+                  isPositive={totalMatchesGrowth.isPositive}
                 />
                 <StatCard
                   className="h-30"
                   icon={Zap}
                   label="Active Matches"
-                  value={stats?.active_matches.toLocaleString() || "0"}
+                  value={(stats?.active_matches ?? 0).toLocaleString()}
+                  growth={activeMatchesGrowth.label}
+                  isPositive={activeMatchesGrowth.isPositive}
                 />
                 <StatCard
                   className="h-30"
                   icon={UserPlus}
                   label="New Users Today"
-                  value={stats?.new_users_today.toLocaleString() || "0"}
+                  value={(stats?.new_users_today ?? 0).toLocaleString()}
+                  growth={newUsersGrowth.label}
+                  isPositive={newUsersGrowth.isPositive}
                 />
               </>
             )}
