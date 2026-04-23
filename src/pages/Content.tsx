@@ -126,7 +126,7 @@ const Content = () => {
               <Skeleton className="h-7 w-64" />
             </div>
 
-            <div className="max-h-[56vh] md:max-h-[48vh] overflow-y-auto">
+            <div className="max-h-[52vh] md:max-h-[44vh] overflow-y-auto">
               <div className="space-y-3">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
@@ -147,7 +147,7 @@ const Content = () => {
               </h2>
             </div>
 
-            <div className="max-h-[56vh] md:max-h-[48vh] overflow-y-auto">
+            <div className="max-h-[52vh] md:max-h-[44vh] overflow-y-auto">
               <EditorView
                 title={data?.title || sectionLabels[activeTab]}
                 content={currentContent}
