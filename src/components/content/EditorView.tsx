@@ -5,6 +5,7 @@ interface EditorViewProps {
   content: string;
   onChange: (value: string) => void;
   searchQuery?: string;
+  showHeader?: boolean;
 }
 
 export default function EditorView({
@@ -12,6 +13,7 @@ export default function EditorView({
   content,
   onChange,
   searchQuery,
+  showHeader = true,
 }: EditorViewProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -49,11 +51,13 @@ export default function EditorView({
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-1">
-        <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
-          {title}
-        </h2>
-      </div>
+      {showHeader && (
+        <div className="flex flex-col gap-1">
+          <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
+            {title}
+          </h2>
+        </div>
+      )}
 
       <textarea
         ref={textareaRef}

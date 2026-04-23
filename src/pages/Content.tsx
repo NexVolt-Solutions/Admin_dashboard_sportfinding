@@ -121,21 +121,42 @@ const Content = () => {
         className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8"
       >
         {isLoading ? (
-          <div className="space-y-3">
-            <Skeleton className="h-7 w-64" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-5/6" />
-          </div>
+          <>
+            <div className="flex flex-col gap-1 mb-3">
+              <Skeleton className="h-7 w-64" />
+            </div>
+
+            <div className="max-h-[56vh] md:max-h-[48vh] overflow-y-auto">
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+              </div>
+            </div>
+          </>
         ) : (
-          <EditorView
-            title={data?.title || sectionLabels[activeTab]}
-            content={currentContent}
-            onChange={setCurrentContent}
-            searchQuery={search}
-          />
+          <>
+            <div className="flex flex-col gap-1 mb-3">
+              <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
+                {data?.title || sectionLabels[activeTab]}
+              </h2>
+            </div>
+
+            <div className="max-h-[56vh] md:max-h-[48vh] overflow-y-auto">
+              <EditorView
+                title={data?.title || sectionLabels[activeTab]}
+                content={currentContent}
+                onChange={setCurrentContent}
+                searchQuery={search}
+                showHeader={false}
+              />
+            </div>
+          </>
         )}
       </section>
 
