@@ -13,7 +13,7 @@ function isDevBypass() {
   );
 }
 
-const apiClient = axios.create({ baseURL });
+const apiClient = axios.create({ baseURL, timeout: 30_000 });
 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem(ACCESS_TOKEN_KEY);

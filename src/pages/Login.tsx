@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader2, Trophy, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { DEV_BYPASS_TOKEN } from "@/lib/api-client";
-
-const LANDING_LOGIN_URL =
-  (import.meta.env.VITE_LANDING_LOGIN_URL as string | undefined) ??
-  (import.meta.env.DEV
-    ? "http://localhost:3000/login"
-    : "https://sportfinding.com/login");
+import { LANDING_LOGIN_URL } from "@/lib/landing";
 
 const IS_DEV = import.meta.env.DEV;
 

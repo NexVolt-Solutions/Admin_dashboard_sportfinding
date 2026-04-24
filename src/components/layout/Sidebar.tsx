@@ -14,10 +14,7 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/assets/assets";
 import { useAuth } from "@/context/AuthContext";
-
-const LANDING_LOGIN_URL =
-  (import.meta.env.VITE_LANDING_LOGIN_URL as string | undefined) ??
-  "https://sportfinding.com/login";
+import { LANDING_LOGIN_URL } from "@/lib/landing";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
