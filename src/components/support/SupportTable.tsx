@@ -61,6 +61,14 @@ export default function SupportTable({ tickets, onView }: SupportTableProps) {
               <TableRow
                 key={ticket.id}
                 onClick={() => onView(ticket)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onView(ticket);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
                 className="group cursor-pointer border-border/60 transition-colors hover:bg-muted/50"
               >
                 <TableCell

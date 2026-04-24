@@ -173,7 +173,6 @@ export default function Users() {
                     setSportFilter(sport);
                     setPage(1);
                   }}
-                  className="cursor-pointer"
                 >
                   {sport}
                 </DropdownMenuItem>

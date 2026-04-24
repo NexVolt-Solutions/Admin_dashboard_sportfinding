@@ -102,7 +102,7 @@ export default function EditMatch() {
   const { data: match, isLoading, isError } = useQuery<MatchDetail>({
     queryKey: ["match", id],
     queryFn: async () => {
-      const res = await apiClient.get(`/api/v1/matches/${id}`);
+      const res = await apiClient.get(`/api/v1/admin/matches/${id}`);
       return res.data;
     },
     enabled: !!id,

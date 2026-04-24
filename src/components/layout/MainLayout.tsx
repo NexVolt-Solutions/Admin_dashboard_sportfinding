@@ -15,7 +15,16 @@ export default function MainLayout({ children }: MainLayoutProps) {
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity"
+          role="button"
+          tabIndex={0}
+          aria-label="Close menu"
           onClick={() => setIsSidebarOpen(false)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setIsSidebarOpen(false);
+            }
+          }}
         />
       )}
 

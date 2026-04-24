@@ -83,6 +83,14 @@ const UserRow = ({ user }: UserRowProps) => {
   return (
     <TableRow
       onClick={handleRowClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleRowClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
       className="group cursor-pointer border-border/60 transition-colors hover:bg-muted/50"
     >
       <TableCell>

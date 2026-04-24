@@ -40,23 +40,16 @@ export default function ActionMenu({ matchId }: ActionMenuProps) {
         <MoreHorizontal className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[176px]">
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={() => navigate(`/match/view/${matchId}`)}
-        >
+        <DropdownMenuItem onClick={() => navigate(`/match/view/${matchId}`)}>
           <Eye className="h-4 w-4" />
           View match
         </DropdownMenuItem>
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={() => navigate(`/match/edit/${matchId}`)}
-        >
+        <DropdownMenuItem onClick={() => navigate(`/match/edit/${matchId}`)}>
           <Edit2 className="h-4 w-4" />
           Edit match
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
-          className="cursor-pointer"
           onSelect={(e) => {
             e.preventDefault();
             if (window.confirm("Delete this match? This cannot be undone.")) {
