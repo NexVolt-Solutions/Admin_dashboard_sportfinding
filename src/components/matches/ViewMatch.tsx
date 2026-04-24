@@ -89,7 +89,7 @@ const ViewMatch = () => {
   const { data: match, isLoading, isError } = useQuery<MatchDetail>({
     queryKey: ["match", id],
     queryFn: async () => {
-      const res = await apiClient.get(`/api/v1/admin/matches/${id}`);
+      const res = await apiClient.get(`/api/v1/matches/${id}`);
       return res.data;
     },
     enabled: !!id,
