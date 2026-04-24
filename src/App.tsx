@@ -9,6 +9,7 @@ import { Toaster } from "sonner";
 import { Loader2 } from "lucide-react";
 import MainLayout from "./components/layout/MainLayout";
 import AuthGuard from "./components/auth/AuthGuard";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const Login = lazy(() => import("./pages/Login"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
@@ -26,7 +27,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[400px]">
+  <div className="flex items-center justify-center min-h-100">
     <Loader2 className="w-8 h-8 text-primary animate-spin" />
   </div>
 );
@@ -34,7 +35,9 @@ const PageLoader = () => (
 const Protected = ({ children }: { children: React.ReactNode }) => (
   <AuthGuard>
     <MainLayout>
-      <Suspense fallback={<PageLoader />}>{children}</Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>{children}</Suspense>
+      </ErrorBoundary>
     </MainLayout>
   </AuthGuard>
 );
@@ -47,17 +50,21 @@ export default function App() {
         <Route
           path="/login"
           element={
-            <Suspense fallback={<PageLoader />}>
-              <Login />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Login />
+              </Suspense>
+            </ErrorBoundary>
           }
         />
         <Route
           path="/auth-callback"
           element={
-            <Suspense fallback={<PageLoader />}>
-              <AuthCallback />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <AuthCallback />
+              </Suspense>
+            </ErrorBoundary>
           }
         />
         <Route path="/" element={<Protected><Dashboard /></Protected>} />
