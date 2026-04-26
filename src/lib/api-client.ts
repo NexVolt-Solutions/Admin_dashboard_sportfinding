@@ -1,6 +1,6 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 
-const baseURL = import.meta.env.VITE_API_URL || "https://api.sportfinding.com";
+const baseURL = import.meta.env.VITE_API_URL;
 
 export const ACCESS_TOKEN_KEY = "admin_token";
 export const REFRESH_TOKEN_KEY = "admin_refresh_token";

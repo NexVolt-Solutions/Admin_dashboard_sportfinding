@@ -4,7 +4,7 @@ import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 import { Loader2 } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://api.sportfinding.com";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function readTokensFromHash() {
   const params = new URLSearchParams(window.location.hash.slice(1));
