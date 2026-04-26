@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, Trophy, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { DEV_BYPASS_TOKEN } from "@/lib/api-client";
@@ -10,17 +10,19 @@ const IS_DEV = import.meta.env.DEV;
 export default function Login() {
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [devToken, setDevToken] = useState("");
+  const loggedOut = searchParams.get("logged_out") === "1";
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/", { replace: true });
       return;
     }
-    if (!IS_DEV) {
+    if (!IS_DEV && !loggedOut) {
       window.location.replace(LANDING_LOGIN_URL);
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, loggedOut, navigate]);
 
   const handleDevQuickLogin = () => {
     login(devToken.trim() || DEV_BYPASS_TOKEN, "dev-bypass-refresh");
@@ -43,10 +45,28 @@ export default function Login() {
         <div className="mt-8 rounded-xl border border-border bg-card p-6 shadow-sm">
           {!IS_DEV ? (
             <div className="flex flex-col items-center gap-3 py-2">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">
-                Redirecting to sign-in…
-              </p>
+              {loggedOut ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    You are logged out.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => window.location.replace(LANDING_LOGIN_URL)}
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 active:translate-y-px"
+                  >
+                    Continue to sign in
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">
+                    Redirecting to sign-in…
+                  </p>
+                </>
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-5 text-left">

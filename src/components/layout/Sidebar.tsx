@@ -10,11 +10,10 @@ import {
   LogOut,
   X,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/assets/assets";
 import { useAuth } from "@/context/AuthContext";
-import { LANDING_LOGIN_URL } from "@/lib/landing";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -33,11 +32,12 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    window.location.replace(LANDING_LOGIN_URL);
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login?logged_out=1", { replace: true });
   };
 
   const renderedMenuItems = useMemo(
