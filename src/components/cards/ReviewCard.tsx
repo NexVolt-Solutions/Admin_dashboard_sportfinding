@@ -12,7 +12,7 @@ interface ReviewCardProps {
 const ReviewCard = ({ author, rating, date, content }: ReviewCardProps) => {
   const initial = author.charAt(0).toUpperCase();
   return (
-    <article className="rounded-xl border border-border bg-card p-5 shadow-xs self-start w-full min-h-[320px]">
+    <article className="rounded-xl border border-border bg-card p-5 shadow-xs">
       <div className="flex items-start gap-3">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-muted text-sm font-semibold text-primary">
           {initial}
@@ -36,7 +36,7 @@ const ReviewCard = ({ author, rating, date, content }: ReviewCardProps) => {
             <span className="text-xs text-muted-foreground">·</span>
             <time className="text-xs text-muted-foreground">{date}</time>
           </div>
-          <p className="text-sm leading-relaxed text-foreground/80 mt-2">{content}</p>
+          <p className="text-sm leading-relaxed text-foreground/80">{content}</p>
         </div>
       </div>
     </article>
