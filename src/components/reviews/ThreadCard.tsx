@@ -25,24 +25,26 @@ export default function ThreadCard({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={isActive}
       className={cn(
-        "group relative flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
+        // kept original visual intent, added horizontal sizing and top alignment
+        "group relative flex w-full max-w-full items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors self-start min-w-[420px]",
         isActive
           ? "border-transparent bg-primary-muted"
           : "border-transparent bg-transparent hover:bg-muted"
       )}
     >
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-4">
         {avatarUrl ? (
           <img
             src={avatarUrl}
             alt={userName}
-            className="h-9 w-9 shrink-0 rounded-full object-cover"
+            className="h-11 w-11 shrink-0 rounded-full object-cover"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-muted text-primary">
-            <UserIcon className="h-4 w-4" />
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-muted text-primary">
+            <UserIcon className="h-5 w-5" />
           </div>
         )}
         <span
@@ -57,7 +59,7 @@ export default function ThreadCard({
 
       <span
         className={cn(
-          "shrink-0 text-xs font-medium tabular-nums",
+          "shrink-0 text-sm font-medium tabular-nums",
           isActive ? "text-primary/70" : "text-muted-foreground"
         )}
       >
