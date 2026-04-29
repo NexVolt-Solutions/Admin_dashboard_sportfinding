@@ -26,7 +26,7 @@ export default function ThreadCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "group relative flex w-full items-center justify-between gap-3 rounded-lg border px-12 py-2.5 text-left transition-colors",
+        "group relative flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
         isActive
           ? "border-transparent bg-primary-muted"
           : "border-transparent bg-transparent hover:bg-muted"
