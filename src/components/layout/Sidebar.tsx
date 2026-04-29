@@ -10,14 +10,11 @@ import {
   LogOut,
   X,
 } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/assets/assets";
 import { useAuth } from "@/context/AuthContext";
-<<<<<<< HEAD
-=======
 import { redirectToLandingLogin } from "@/lib/landing";
->>>>>>> 9d32121 (second commit)
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -36,16 +33,11 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();
-<<<<<<< HEAD
-    navigate("/login?logged_out=1", { replace: true });
-=======
     redirectToLandingLogin();
->>>>>>> 9d32121 (second commit)
   };
 
   const renderedMenuItems = useMemo(
@@ -54,6 +46,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         const isActive =
           location.pathname === item.path ||
           (item.path !== "/" && location.pathname.startsWith(item.path));
+
         return (
           <Link
             key={item.label}
@@ -77,7 +70,9 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
               )}
               strokeWidth={isActive ? 2.25 : 1.75}
             />
+
             <span className="truncate">{item.label}</span>
+
             {isActive && (
               <span
                 aria-hidden
@@ -101,20 +96,16 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     >
       <div className="flex h-16 items-center justify-between border-b border-border px-4 lg:px-6">
         <Link to="/" className="flex items-center gap-2 min-w-0">
-          <img
-            src={Logo}
-            alt=""
-            className="h-9 w-9 shrink-0 object-contain"
-          />
+          <img src={Logo} alt="Logo" className="h-9 w-9 shrink-0 object-contain" />
           <span className="font-heading text-base sm:text-lg font-bold tracking-tight text-foreground truncate">
             SportFinding
           </span>
         </Link>
+
         <button
           type="button"
           onClick={onClose}
           aria-label="Close menu"
-          title="Close menu"
           className="rounded-md p-1.5 text-sidebarText transition-colors hover:bg-muted hover:text-foreground lg:hidden"
         >
           <X className="h-5 w-5" />
