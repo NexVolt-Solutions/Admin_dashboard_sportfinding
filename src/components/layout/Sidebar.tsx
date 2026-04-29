@@ -14,6 +14,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/assets/assets";
 import { useAuth } from "@/context/AuthContext";
+<<<<<<< HEAD
+=======
+import { redirectToLandingLogin } from "@/lib/landing";
+>>>>>>> 9d32121 (second commit)
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -37,7 +41,11 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
   const handleLogout = async () => {
     await logout();
+<<<<<<< HEAD
     navigate("/login?logged_out=1", { replace: true });
+=======
+    redirectToLandingLogin();
+>>>>>>> 9d32121 (second commit)
   };
 
   const renderedMenuItems = useMemo(

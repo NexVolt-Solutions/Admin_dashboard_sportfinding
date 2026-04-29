@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, Trophy, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { DEV_BYPASS_TOKEN } from "@/lib/api-client";
-import { LANDING_LOGIN_URL } from "@/lib/landing";
+import { redirectToLandingLogin } from "@/lib/landing";
 
 const IS_DEV = import.meta.env.DEV;
 
@@ -19,8 +19,13 @@ export default function Login() {
       navigate("/", { replace: true });
       return;
     }
+<<<<<<< HEAD
     if (!IS_DEV && !loggedOut) {
       window.location.replace(LANDING_LOGIN_URL);
+=======
+    if (!IS_DEV) {
+      redirectToLandingLogin();
+>>>>>>> 9d32121 (second commit)
     }
   }, [isAuthenticated, loggedOut, navigate]);
 
@@ -82,7 +87,7 @@ export default function Login() {
 
               <button
                 type="button"
-                onClick={() => window.location.replace(LANDING_LOGIN_URL)}
+                onClick={redirectToLandingLogin}
                 className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 active:translate-y-px"
               >
                 Continue to landing login
