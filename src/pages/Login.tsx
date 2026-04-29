@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Trophy, ArrowRight } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/useAuth";
 import { DEV_BYPASS_TOKEN } from "@/lib/api-client";
 import { redirectToLandingLogin } from "@/lib/landing";
 

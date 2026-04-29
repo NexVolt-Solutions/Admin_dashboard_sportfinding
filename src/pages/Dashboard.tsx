@@ -123,7 +123,7 @@ const Dashboard = () => {
       {/* Activity charts */}
       <section
         aria-label="Activity charts"
-        className="grid grid-cols-1 gap-4 lg:grid-cols-3"
+        className="grid grid-cols-1 gap-4 lg:grid-cols-3 [&>*]:min-w-0"
       >
         <Suspense fallback={<ChartSkeleton className="lg:col-span-2" />}>
           <UserActivityChart data={stats?.total_users_by_month || []} />
@@ -134,7 +134,7 @@ const Dashboard = () => {
       </section>
 
       {/* Sport popularity */}
-      <section aria-label="Sport popularity">
+      <section aria-label="Sport popularity" className="min-w-0">
         <Suspense fallback={<ChartSkeleton />}>
           <PopularSportsChart data={stats?.most_popular_sports || []} />
         </Suspense>

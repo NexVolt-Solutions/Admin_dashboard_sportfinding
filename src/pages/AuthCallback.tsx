@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/useAuth";
 import { Loader2 } from "lucide-react";
+import { logApiError, logApiRequest, logApiResponse } from "@/lib/api-client";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,12 +16,28 @@ function readTokensFromHash() {
 }
 
 async function verifyAdmin(accessToken: string, signal: AbortSignal): Promise<boolean> {
-  const response = await axios.get(`${API_URL}/api/v1/admin/account`, {
-    headers: { accept: "application/json", Authorization: `Bearer ${accessToken}` },
-    validateStatus: () => true,
-    signal,
-  });
-  return response.status === 200;
+  const url = `${API_URL}/api/v1/admin/account`;
+  const headers = {
+    accept: "application/json",
+    Authorization: `Bearer ${accessToken}`,
+  };
+
+  logApiRequest({ method: "get", url, headers });
+
+  try {
+    const response = await axios.get(url, {
+      headers,
+      validateStatus: () => true,
+      signal,
+    });
+    logApiResponse({ method: "get", url }, response.status, response.data);
+    return response.status === 200;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      logApiError(error);
+    }
+    throw error;
+  }
 }
 
 export default function AuthCallback() {

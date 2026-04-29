@@ -154,7 +154,7 @@ const Reviews = () => {
             </div>
           </div>
 
-          <div className="flex-1 space-y-1 overflow-y-auto p-30">
+          <div className="flex-1 space-y-1 overflow-y-auto p-3">
             {isLoadingUsers ? (
               Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3 p-3">
@@ -193,7 +193,7 @@ const Reviews = () => {
         >
           {activeThread ? (
             <>
-              <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-md">
+              <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border/60 bg-card px-4 py-3">
                 <div className="flex items-center gap-3">
                   <Button
                     type="button"
@@ -295,7 +295,7 @@ const Reviews = () => {
               </div>
               <div className="max-w-sm space-y-1">
                 <h3 className="font-heading text-base font-semibold text-foreground">
-                No user review yet
+                  No user review yet
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   Choose a user from the left to view and moderate their reviews.

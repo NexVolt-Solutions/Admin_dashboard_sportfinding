@@ -37,7 +37,7 @@ const UserActivityChart = ({ data }: UserActivityChartProps) => {
         <CardTitle>Total Users</CardTitle>
         <CardDescription>Monthly cumulative growth</CardDescription>
       </CardHeader>
-      <CardContent className="h-80">
+      <CardContent className="h-80 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}

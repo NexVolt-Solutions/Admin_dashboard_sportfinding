@@ -13,7 +13,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/assets/assets";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/useAuth";
 import { redirectToLandingLogin } from "@/lib/landing";
 
 const menuItems = [

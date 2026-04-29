@@ -1,16 +1,14 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/lib/api-client";
-
-interface AuthContextType {
-  token: string | null;
-  isAuthenticated: boolean;
-  login: (accessToken: string, refreshToken?: string) => void;
-  logout: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null);
+import {
+  ACCESS_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+  logApiError,
+  logApiRequest,
+  logApiResponse,
+} from "@/lib/api-client";
+import { AuthContext } from "@/context/auth-context";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -37,18 +35,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (refreshToken) {
       try {
-        await axios.post(
-          `${baseURL}/api/v1/auth/logout`,
-          { refresh_token: refreshToken },
-          {
-            headers: {
-              accept: "application/json",
-              "Content-Type": "application/json",
-              ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-            },
-          }
-        );
-      } catch {
+        const url = `${baseURL}/api/v1/auth/logout`;
+        const payload = { refresh_token: refreshToken };
+        const headers = {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        };
+
+        logApiRequest({ method: "post", url, data: payload, headers });
+
+        const response = await axios.post(url, payload, { headers });
+        logApiResponse({ method: "post", url }, response.status, response.data);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          logApiError(error);
+        }
         // best-effort — local state is already cleared
       }
     }
@@ -59,12 +61,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 }
