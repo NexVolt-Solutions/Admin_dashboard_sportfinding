@@ -46,12 +46,22 @@ interface FormState {
   longitude: string;
   date: string;
   time: string;
+  sport: string;
   duration_minutes: number;
   max_players: number;
   skill_level: string;
 }
 
-const skillLevels = ["Beginner", "Intermediate", "Advanced"];
+const sports = [
+  "Football",
+  "Basketball",
+  "Cricket",
+  "Tennis",
+  "Volleyball",
+  "Badminton",
+];
+
+const durationOptions = [30, 45, 60, 90, 120, 150, 180];
 
 const emptyForm: FormState = {
   title: "",
@@ -63,6 +73,7 @@ const emptyForm: FormState = {
   longitude: "",
   date: "",
   time: "",
+  sport: "Football",
   duration_minutes: 60,
   max_players: 10,
   skill_level: "Beginner",
@@ -70,26 +81,9 @@ const emptyForm: FormState = {
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <label className="text-xs font-medium text-muted-foreground">
       {children}
     </label>
-  );
-}
-
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="space-y-4">
-      <h3 className="font-heading text-base font-semibold text-foreground">
-        {title}
-      </h3>
-      {children}
-    </section>
   );
 }
 
@@ -125,6 +119,7 @@ export default function EditMatch() {
       longitude: match.longitude != null ? String(match.longitude) : "",
       date: isoDate,
       time: isoTime,
+      sport: match.sport || "Football",
       duration_minutes: match.duration_minutes || 60,
       max_players: match.max_players || 10,
       skill_level: match.skill_level || "Beginner",
@@ -146,6 +141,7 @@ export default function EditMatch() {
       const payload: Record<string, unknown> = {
         title: form.title,
         description: form.description,
+        sport: form.sport,
         facility_address: form.facility_address,
         location: form.location,
         location_name: form.location_name || undefined,
@@ -195,14 +191,14 @@ export default function EditMatch() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <header className="flex items-start justify-between gap-3">
+    <div className="mx-auto max-w-6xl space-y-7">
+      <header className="flex items-start justify-between gap-3 pt-1">
         <div className="flex flex-col gap-1">
           <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Edit match
+            Edit Match
           </h1>
           <p className="text-sm text-muted-foreground">
-            Update schedule, location, and settings.
+            Update schedule, location, and match settings.
           </p>
         </div>
         <Button
@@ -210,147 +206,162 @@ export default function EditMatch() {
           variant="ghost"
           size="sm"
           onClick={() => navigate(-1)}
+          className="mt-1 text-muted-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
       </header>
 
-      <Card size="lg" className="max-h-none">
-        <CardContent className="space-y-8 p-6 sm:p-8">
-          <Section title="Match details">
-            <div className="space-y-2">
+      <Card size="lg" className="max-h-none border-border/60 shadow-none">
+        <CardContent className="space-y-5 p-8">
+          <section className="space-y-4">
+            <h3 className="font-heading text-base font-semibold text-foreground">
+              Match Details
+            </h3>
+            <div className="space-y-1.5">
               <FieldLabel>Match title</FieldLabel>
               <Input
                 value={form.title}
                 onChange={(e) => update("title", e.target.value)}
+                className="h-12"
+                disabled
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <FieldLabel>Description</FieldLabel>
               <Textarea
                 value={form.description}
                 onChange={(e) => update("description", e.target.value)}
-                className="min-h-[128px] resize-none"
+                className="min-h-[88px] resize-none"
+                disabled
               />
             </div>
-          </Section>
+          </section>
 
-          <Section title="Schedule">
+          <section className="space-y-4">
+            <h3 className="font-heading text-base font-semibold text-foreground">
+              Schedule
+            </h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <FieldLabel>Date</FieldLabel>
                 <div className="relative">
                   <Input
                     type="date"
                     value={form.date}
                     onChange={(e) => update("date", e.target.value)}
-                    className="pr-9"
+                    className="h-12 pr-9"
                   />
                   <Calendar className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <FieldLabel>Time</FieldLabel>
                 <div className="relative">
                   <Input
                     type="time"
                     value={form.time}
                     onChange={(e) => update("time", e.target.value)}
-                    className="pr-9"
+                    className="h-12 pr-9"
                   />
                   <Clock className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 </div>
               </div>
             </div>
-          </Section>
-
-          <Section title="Location">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <FieldLabel>Location name</FieldLabel>
-                <Input
-                  value={form.location_name}
-                  onChange={(e) => update("location_name", e.target.value)}
-                  placeholder="e.g. Central Park Court 4"
-                />
-              </div>
-              <div className="space-y-2">
-                <FieldLabel>City</FieldLabel>
-                <Input
+            <div className="space-y-1.5">
+              <FieldLabel>Location</FieldLabel>
+              <div className="relative">
+                <select
+                  aria-label="Location"
                   value={form.location}
                   onChange={(e) => update("location", e.target.value)}
-                />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <FieldLabel>Facility address</FieldLabel>
-                <Input
-                  value={form.facility_address}
-                  onChange={(e) => update("facility_address", e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <FieldLabel>Latitude</FieldLabel>
-                <Input
-                  type="number"
-                  step="any"
-                  value={form.latitude}
-                  onChange={(e) => update("latitude", e.target.value)}
-                  placeholder="e.g. 24.8607"
-                />
-              </div>
-              <div className="space-y-2">
-                <FieldLabel>Longitude</FieldLabel>
-                <Input
-                  type="number"
-                  step="any"
-                  value={form.longitude}
-                  onChange={(e) => update("longitude", e.target.value)}
-                  placeholder="e.g. 67.0011"
-                />
+                  disabled
+                  className={cn(
+                    "h-12 w-full appearance-none rounded-lg border border-input bg-card pl-3 pr-8 text-sm text-foreground shadow-xs outline-none transition-colors",
+                    "hover:border-input/80 focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/30"
+                  )}
+                >
+                  <option value="Peshawar">Peshawar</option>
+                  <option value="Islamabad">Islamabad</option>
+                  <option value="Lahore">Lahore</option>
+                  <option value="Karachi">Karachi</option>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
-          </Section>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <FieldLabel>Match Duration</FieldLabel>
+                <button
+                  type="button"
+                  className="text-xs font-medium text-primary hover:underline"
+                  disabled
+                  onClick={() => {
+                    const fallback = form.location || form.facility_address;
+                    const query = encodeURIComponent(fallback || "sport facility");
+                    window.open(
+                      `https://www.google.com/maps/search/?api=1&query=${query}`,
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
+                  }}
+                >
+                  Select on Map
+                </button>
+              </div>
+              <div className="relative">
+                <select
+                  aria-label="Match Duration"
+                  value={String(form.duration_minutes)}
+                  onChange={(e) => update("duration_minutes", Number(e.target.value))}
+                  disabled
+                  className={cn(
+                    "h-12 w-full appearance-none rounded-lg border border-input bg-card pl-3 pr-8 text-sm text-foreground shadow-xs outline-none transition-colors",
+                    "hover:border-input/80 focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/30"
+                  )}
+                >
+                  {durationOptions.map((min) => (
+                    <option key={min} value={min}>
+                      {`${Math.floor(min / 60) > 0 ? `${Math.floor(min / 60)}:${String(min % 60).padStart(2, "0")}` : `0:${String(min).padStart(2, "0")}`} min`}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
+            </div>
+          </section>
 
-          <Section title="Match settings">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <FieldLabel>Skill level</FieldLabel>
+          <section className="space-y-4">
+            <h3 className="font-heading text-base font-semibold text-foreground">
+              Sports Type
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-1.5">
+                <FieldLabel>Sports Type</FieldLabel>
                 <div className="relative">
                   <select
-                    value={form.skill_level}
-                    onChange={(e) => update("skill_level", e.target.value)}
+                    aria-label="Sports Type"
+                    value={form.sport}
+                    onChange={(e) => update("sport", e.target.value)}
+                    disabled
                     className={cn(
-                      "h-9 w-full appearance-none rounded-lg border border-input bg-card pl-3 pr-8 text-sm text-foreground shadow-xs outline-none transition-colors",
+                      "h-12 w-full appearance-none rounded-lg border border-input bg-card pl-3 pr-8 text-sm text-foreground shadow-xs outline-none transition-colors",
                       "hover:border-input/80 focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/30"
                     )}
                   >
-                    {skillLevels.map((level) => (
-                      <option key={level} value={level}>
-                        {level}
+                    {sports.map((sport) => (
+                      <option key={sport} value={sport}>
+                        {sport}
                       </option>
                     ))}
                   </select>
                   <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <FieldLabel>Duration (minutes)</FieldLabel>
-                <Input
-                  type="number"
-                  min={1}
-                  value={form.duration_minutes}
-                  onChange={(e) =>
-                    update(
-                      "duration_minutes",
-                      Math.max(1, Number(e.target.value) || 0)
-                    )
-                  }
-                />
-              </div>
-              <div className="space-y-2 md:col-span-2">
+              <div className="space-y-1.5">
                 <FieldLabel>Maximum players</FieldLabel>
-                <div className="flex h-9 items-center justify-between rounded-lg border border-input bg-card px-3 shadow-xs">
+                <div className="flex h-12 items-center justify-between rounded-lg border border-input bg-card px-3 shadow-xs">
                   <span className="text-sm tabular-nums text-foreground">
                     {form.max_players}
                   </span>
@@ -359,6 +370,7 @@ export default function EditMatch() {
                       type="button"
                       variant="ghost"
                       size="icon-sm"
+                      disabled
                       onClick={() =>
                         update("max_players", Math.max(1, form.max_players - 1))
                       }
@@ -370,6 +382,7 @@ export default function EditMatch() {
                       type="button"
                       variant="ghost"
                       size="icon-sm"
+                      disabled
                       onClick={() => update("max_players", form.max_players + 1)}
                       aria-label="Increase players"
                     >
@@ -379,12 +392,12 @@ export default function EditMatch() {
                 </div>
               </div>
             </div>
-          </Section>
+          </section>
 
-          <div className="flex justify-end border-t border-border/60 pt-6">
+          <div className="flex justify-end border-t border-border/60 pt-5">
             <Button
               type="button"
-              size="lg"
+              className="h-10 min-w-[144px] rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
               onClick={handleSave}
               disabled={saving}
             >
@@ -394,7 +407,7 @@ export default function EditMatch() {
                   Saving…
                 </>
               ) : (
-                "Save changes"
+                "Save Changes"
               )}
             </Button>
           </div>
