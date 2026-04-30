@@ -12,11 +12,13 @@ import { toast } from "sonner";
 
 interface ActionMenuProps {
   matchId: string;
+  status?: string;
 }
 
-export default function ActionMenu({ matchId }: ActionMenuProps) {
+export default function ActionMenu({ matchId, status }: ActionMenuProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isCompleted = status?.toLowerCase() === "completed";
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
@@ -44,7 +46,15 @@ export default function ActionMenu({ matchId }: ActionMenuProps) {
           <Eye className="h-4 w-4" />
           View match
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate(`/match/edit/${matchId}`)}>
+        <DropdownMenuItem
+          onClick={() => {
+            if (isCompleted) {
+              toast.error("Completed matches cannot be edited.");
+              return;
+            }
+            navigate(`/match/edit/${matchId}`);
+          }}
+        >
           <Edit2 className="h-4 w-4" />
           Edit match
         </DropdownMenuItem>

@@ -82,7 +82,7 @@ export default function MatchesTable({ matches }: MatchesTableProps) {
                   {formatDate(match.scheduled_at)}
                 </TableCell>
                 <TableCell className="text-right">
-                  <ActionMenu matchId={match.id} />
+                  <ActionMenu matchId={match.id} status={match.status} />
                 </TableCell>
               </TableRow>
             ))}
@@ -97,7 +97,7 @@ export default function MatchesTable({ matches }: MatchesTableProps) {
               <h4 className="text-sm font-semibold text-foreground">
                 {match.title}
               </h4>
-              <ActionMenu matchId={match.id} />
+              <ActionMenu matchId={match.id} status={match.status} />
             </div>
             <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">

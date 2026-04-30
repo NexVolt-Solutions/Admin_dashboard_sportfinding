@@ -71,6 +71,7 @@ export interface AdminMatch {
   host_email: string;
   location: string;
   scheduled_at: string;
+  status?: string;
 }
 
 export interface AdminMatchListResponse {

@@ -30,6 +30,12 @@ const Dashboard = () => {
       const response = await apiClient.get("/api/v1/admin/dashboard");
       return response.data;
     },
+    // Keep whole dashboard data as close to real-time as possible via polling.
+    staleTime: 0,
+    refetchInterval: 5_000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+    refetchOnMount: "always",
   });
 
   // compute simple daily progress percentages (safe defaults)

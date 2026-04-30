@@ -62,24 +62,35 @@ function avatarFor(name: string, size = 64) {
   )}&size=${size}&background=3EA7FD&color=fff`;
 }
 
-function formatTime(time: string) {
-  if (!time) return "—";
-  const [hStr, m] = time.split(":");
-  const h = Number(hStr);
-  const ampm = h >= 12 ? "PM" : "AM";
-  const hour = ((h + 11) % 12) + 1;
-  return `${hour}:${m} ${ampm}`;
+function formatScheduledDateTime(iso: string) {
+  const date = new Date(iso);
+  if (isNaN(date.getTime())) return { date: "—", time: "—" };
+  return {
+    date: date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+    time: date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }),
+  };
 }
 
 function statusBadge(status: string) {
   const normalized = status.toLowerCase();
   if (normalized === "completed") {
-    return "bg-success/10 text-success";
+    return { className: "bg-success/10 text-success", label: "Completed" };
   }
   if (normalized === "cancelled" || normalized === "canceled") {
-    return "bg-destructive/10 text-destructive";
+    return { className: "bg-destructive/10 text-destructive", label: "Cancelled" };
   }
-  return "bg-primary-muted text-primary";
+  if (normalized === "open") {
+    return { className: "bg-primary-muted text-primary", label: "Pending" };
+  }
+  return { className: "bg-primary-muted text-primary", label: status };
 }
 
 const ViewMatch = () => {
@@ -124,13 +135,8 @@ const ViewMatch = () => {
     );
   }
 
-  const dateLabel = match.scheduled_date
-    ? new Date(match.scheduled_date).toLocaleDateString(undefined, {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "—";
+  const scheduled = formatScheduledDateTime(match.scheduled_at);
+  const status = statusBadge(match.status);
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
@@ -165,21 +171,21 @@ const ViewMatch = () => {
           <span
             className={cn(
               "inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium",
-              statusBadge(match.status)
+              status.className
             )}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-            {match.status}
+            {status.label}
           </span>
         </CardContent>
       </Card>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <DetailItem icon={Calendar} label="Date" value={dateLabel} />
+        <DetailItem icon={Calendar} label="Date" value={scheduled.date} />
         <DetailItem
           icon={Clock}
           label="Time"
-          value={formatTime(match.scheduled_time)}
+          value={scheduled.time}
         />
         <DetailItem
           icon={Trophy}

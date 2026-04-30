@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
-  Calendar,
-  Clock,
   ChevronDown,
   Plus,
   Minus,
@@ -102,10 +100,31 @@ export default function EditMatch() {
     enabled: !!id,
   });
 
+  function formatScheduledPreview(date: string, time: string) {
+    if (!date || !time) return "—";
+    const composed = new Date(`${date}T${time}`);
+    if (isNaN(composed.getTime())) return "—";
+    const dateLabel = composed.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    const timeLabel = composed.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+    return `${dateLabel} · ${timeLabel}`;
+  }
+
   useEffect(() => {
     if (!match) return;
     const d = new Date(match.scheduled_at);
-    const isoDate = isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+    const isoDate = isNaN(d.getTime())
+      ? ""
+      : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+          d.getDate()
+        ).padStart(2, "0")}`;
     const isoTime = isNaN(d.getTime())
       ? ""
       : `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
@@ -125,6 +144,14 @@ export default function EditMatch() {
       skill_level: match.skill_level || "Beginner",
     });
   }, [match]);
+
+  useEffect(() => {
+    if (!match) return;
+    if (match.status?.toLowerCase() === "completed") {
+      toast.error("Completed matches cannot be edited.");
+      navigate("/match", { replace: true });
+    }
+  }, [match, navigate]);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -243,30 +270,27 @@ export default function EditMatch() {
             <h3 className="font-heading text-base font-semibold text-foreground">
               Schedule
             </h3>
+            <p className="text-xs text-muted-foreground">
+              Current schedule: {formatScheduledPreview(form.date, form.time)}
+            </p>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-1.5">
                 <FieldLabel>Date</FieldLabel>
-                <div className="relative">
-                  <Input
-                    type="date"
-                    value={form.date}
-                    onChange={(e) => update("date", e.target.value)}
-                    className="h-12 pr-9"
-                  />
-                  <Calendar className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                </div>
+                <Input
+                  type="date"
+                  value={form.date}
+                  onChange={(e) => update("date", e.target.value)}
+                  className="h-12"
+                />
               </div>
               <div className="space-y-1.5">
                 <FieldLabel>Time</FieldLabel>
-                <div className="relative">
-                  <Input
-                    type="time"
-                    value={form.time}
-                    onChange={(e) => update("time", e.target.value)}
-                    className="h-12 pr-9"
-                  />
-                  <Clock className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                </div>
+                <Input
+                  type="time"
+                  value={form.time}
+                  onChange={(e) => update("time", e.target.value)}
+                  className="h-12"
+                />
               </div>
             </div>
             <div className="space-y-1.5">
