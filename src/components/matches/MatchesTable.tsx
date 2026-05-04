@@ -9,27 +9,10 @@ import {
 import { Calendar, Mail, MapPin } from "lucide-react";
 import type { AdminMatch } from "@/types/dashboard";
 import ActionMenu from "./ActionMenu";
+import { formatMatchScheduledAt } from "@/lib/match-scheduled";
 
 interface MatchesTableProps {
   matches: AdminMatch[];
-}
-
-function formatDate(iso: string) {
-  const date = new Date(iso);
-  if (isNaN(date.getTime())) return "—";
-  return (
-    date.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }) +
-    " · " +
-    date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    })
-  );
 }
 
 export default function MatchesTable({ matches }: MatchesTableProps) {
@@ -79,7 +62,7 @@ export default function MatchesTable({ matches }: MatchesTableProps) {
                   {match.location}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {formatDate(match.scheduled_at)}
+                  {formatMatchScheduledAt(match.scheduled_at)}
                 </TableCell>
                 <TableCell className="text-right">
                   <ActionMenu matchId={match.id} status={match.status} />
@@ -112,7 +95,7 @@ export default function MatchesTable({ matches }: MatchesTableProps) {
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-3.5 w-3.5" />
-                <span>{formatDate(match.scheduled_at)}</span>
+                <span>{formatMatchScheduledAt(match.scheduled_at)}</span>
               </div>
             </div>
           </div>

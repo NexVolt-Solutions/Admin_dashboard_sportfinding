@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { formatMatchScheduledDateTimeParts } from "@/lib/match-scheduled";
 
 interface Participant {
   user: {
@@ -60,23 +61,6 @@ function avatarFor(name: string, size = 64) {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name
   )}&size=${size}&background=3EA7FD&color=fff`;
-}
-
-function formatScheduledDateTime(iso: string) {
-  const date = new Date(iso);
-  if (isNaN(date.getTime())) return { date: "—", time: "—" };
-  return {
-    date: date.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }),
-    time: date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    }),
-  };
 }
 
 function statusBadge(status: string) {
@@ -135,7 +119,7 @@ const ViewMatch = () => {
     );
   }
 
-  const scheduled = formatScheduledDateTime(match.scheduled_at);
+  const scheduled = formatMatchScheduledDateTimeParts(match.scheduled_at);
   const status = statusBadge(match.status);
 
   return (

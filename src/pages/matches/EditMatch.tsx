@@ -16,6 +16,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import {
+  formatMatchScheduledAt,
+  getMatchScheduleInputsFromIso,
+  matchScheduleInputsToUtcIso,
+} from "@/lib/match-scheduled";
 
 interface MatchDetail {
   id: string;
@@ -101,33 +106,15 @@ export default function EditMatch() {
   });
 
   function formatScheduledPreview(date: string, time: string) {
-    if (!date || !time) return "—";
-    const composed = new Date(`${date}T${time}`);
-    if (isNaN(composed.getTime())) return "—";
-    const dateLabel = composed.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-    const timeLabel = composed.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-    return `${dateLabel} · ${timeLabel}`;
+    const iso = matchScheduleInputsToUtcIso(date, time);
+    return iso ? formatMatchScheduledAt(iso) : "—";
   }
 
   useEffect(() => {
     if (!match) return;
-    const d = new Date(match.scheduled_at);
-    const isoDate = isNaN(d.getTime())
-      ? ""
-      : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-          d.getDate()
-        ).padStart(2, "0")}`;
-    const isoTime = isNaN(d.getTime())
-      ? ""
-      : `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    const { date: isoDate, time: isoTime } = getMatchScheduleInputsFromIso(
+      match.scheduled_at
+    );
     setForm({
       title: match.title || "",
       description: match.description || "",
@@ -160,10 +147,7 @@ export default function EditMatch() {
     if (!id) return;
     setSaving(true);
     try {
-      const scheduledAt =
-        form.date && form.time
-          ? new Date(`${form.date}T${form.time}`).toISOString()
-          : undefined;
+      const scheduledAt = matchScheduleInputsToUtcIso(form.date, form.time);
 
       const payload: Record<string, unknown> = {
         title: form.title,
