@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import {
   Card,
@@ -8,6 +8,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { PopularSport } from "@/types/dashboard";
+
+function sportLabel(sport: PopularSport["sport"]): string {
+  if (sport == null) return "—";
+  if (typeof sport === "string") return sport;
+  if (typeof sport === "object" && sport !== null && "name" in sport && sport.name) {
+    return String(sport.name);
+  }
+  return "—";
+}
+
+function sportRowKey(sport: PopularSport["sport"], index: number): string {
+  if (sport && typeof sport === "object" && "id" in sport && sport.id != null) {
+    return String(sport.id);
+  }
+  if (typeof sport === "string") return sport;
+  return `sport-${index}`;
+}
 
 const COLORS = [
   "var(--color-chart-1)",
@@ -22,6 +39,12 @@ interface PopularSportsChartProps {
   data: PopularSport[];
 }
 
+const DEFAULT_POPULAR_SPORTS: PopularSport[] = [
+  { sport: "Football", count: 0, percentage: 0 },
+  { sport: "Basketball", count: 0, percentage: 0 },
+  { sport: "Cricket", count: 0, percentage: 0 },
+];
+
 const tooltipStyle = {
   borderRadius: 12,
   border: "1px solid #E5E7EB",
@@ -31,12 +54,15 @@ const tooltipStyle = {
 };
 
 const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
-  const defaultData: PopularSport[] = [
-    { sport: "Football", count: 0, percentage: 0 },
-    { sport: "Basketball", count: 0, percentage: 0 },
-    { sport: "Cricket", count: 0, percentage: 0 },
-  ];
-  const list = data && data.length > 0 ? data : defaultData;
+  const list = useMemo(() => {
+    const raw = data && data.length > 0 ? data : DEFAULT_POPULAR_SPORTS;
+    return raw.map((item, index) => ({
+      ...item,
+      sportLabel: sportLabel(item.sport),
+      rowKey: sportRowKey(item.sport, index),
+      percentageNum: Number(item.percentage),
+    }));
+  }, [data]);
   return (
     <Card>
       <CardHeader>
@@ -55,8 +81,8 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
                   innerRadius={62}
                   outerRadius={88}
                   paddingAngle={2}
-                  dataKey="percentage"
-                  nameKey="sport"
+                  dataKey="percentageNum"
+                  nameKey="sportLabel"
                   stroke="var(--color-card)"
                   strokeWidth={3}
                 >
@@ -75,7 +101,7 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
           <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {list.map((item, index) => (
               <li
-                key={item.sport}
+                key={item.rowKey}
                 className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted/40"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -84,11 +110,11 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}
                   />
                   <span className="truncate text-sm font-medium text-foreground">
-                    {item.sport}
+                    {item.sportLabel}
                   </span>
                 </div>
                 <span className="text-sm font-semibold tabular-nums text-muted-foreground">
-                  {item.percentage}%
+                  {item.percentageNum}%
                 </span>
               </li>
             ))}

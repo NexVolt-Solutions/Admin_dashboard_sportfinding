@@ -8,8 +8,15 @@ export interface MatchesPerDay {
   count: number;
 }
 
+/** API may return a sport entity object instead of a plain sport name string. */
+export interface SportApiEntity {
+  id?: string;
+  name?: string;
+  category?: string;
+}
+
 export interface PopularSport {
-  sport: SportType;
+  sport: SportType | SportApiEntity;
   count: number;
   percentage: number;
 }
