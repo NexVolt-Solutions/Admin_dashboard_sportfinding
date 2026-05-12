@@ -64,22 +64,27 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
     }));
   }, [data]);
   return (
-    <Card>
+    <Card className="max-h-none">
       <CardHeader>
         <CardTitle>Most Popular Sports</CardTitle>
         <CardDescription>Share of matches by sport</CardDescription>
       </CardHeader>
       <CardContent className="min-w-0">
-        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[200px_1fr]">
-          <div className="relative h-48 min-w-0 md:h-56 lg:h-64">
-            <ResponsiveContainer width="100%" height="100%">
+        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[minmax(0,160px)_1fr] md:gap-5">
+          <div className="relative mx-auto h-36 min-h-36 w-full max-w-[160px] min-w-0 md:mx-0 md:h-40 md:min-h-40 md:max-w-none lg:h-44 lg:min-h-44">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minWidth={1}
+              initialDimension={{ width: 180, height: 176 }}
+            >
               <PieChart>
                 <Pie
                   data={list}
                   cx="50%"
                   cy="50%"
-                  innerRadius={62}
-                  outerRadius={88}
+                  innerRadius={42}
+                  outerRadius={62}
                   paddingAngle={2}
                   dataKey="percentageNum"
                   nameKey="sportLabel"
@@ -98,11 +103,11 @@ const PopularSportsChart = ({ data }: PopularSportsChartProps) => {
             </ResponsiveContainer>
           </div>
 
-          <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {list.map((item, index) => (
               <li
                 key={item.rowKey}
-                className="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted/40"
+                className="flex items-center justify-between gap-2 rounded-lg px-2 py-1 transition-colors hover:bg-muted/40"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <span

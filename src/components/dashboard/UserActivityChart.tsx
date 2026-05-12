@@ -32,16 +32,21 @@ const tooltipStyle = {
 
 const UserActivityChart = ({ data }: UserActivityChartProps) => {
   return (
-    <Card className="lg:col-span-2">
+    <Card className="max-h-none lg:col-span-2">
       <CardHeader>
         <CardTitle>Total Users</CardTitle>
         <CardDescription>Monthly cumulative growth</CardDescription>
       </CardHeader>
-      <CardContent className="h-80 min-w-0">
-        <ResponsiveContainer width="100%" height="100%">
+      <CardContent className="h-52 min-w-0 md:h-56">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          minWidth={1}
+          initialDimension={{ width: 800, height: 224 }}
+        >
           <LineChart
             data={data}
-            margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
+            margin={{ top: 4, right: 8, left: -16, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="0" vertical={false} stroke="#F1F5F9" />
             <XAxis

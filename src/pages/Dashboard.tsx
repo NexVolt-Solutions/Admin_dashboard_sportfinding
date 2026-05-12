@@ -20,7 +20,7 @@ const PopularSportsChart = lazy(
  * ChartSkeleton
  */
 const ChartSkeleton = ({ className = "" }: { className?: string }) => (
-  <Skeleton className={`h-96 w-full rounded-xl ${className}`} />
+  <Skeleton className={`h-56 w-full rounded-xl md:h-64 ${className}`} />
 );
 
 const Dashboard = () => {

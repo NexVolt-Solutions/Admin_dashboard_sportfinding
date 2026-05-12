@@ -39,16 +39,21 @@ const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
   });
 
   return (
-    <Card>
+    <Card className="max-h-none">
       <CardHeader>
         <CardTitle>Matches Per Day</CardTitle>
         <CardDescription>Last 7 days</CardDescription>
       </CardHeader>
-      <CardContent className="h-64 min-w-0 md:h-80">
-        <ResponsiveContainer width="100%" height="100%">
+      <CardContent className="h-48 min-w-0 md:h-52">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          minWidth={1}
+          initialDimension={{ width: 600, height: 208 }}
+        >
           <BarChart
             data={normalized}
-            margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
+            margin={{ top: 4, right: 8, left: -20, bottom: 0 }}
           >
             <XAxis
               dataKey="day"
@@ -59,7 +64,7 @@ const MatchesPerDayChart = ({ data }: MatchesPerDayChartProps) => {
             />
             <YAxis axisLine={false} tickLine={false} tick={tickStyle} />
             <Tooltip cursor={false} contentStyle={tooltipStyle} />
-            <Bar dataKey="count" radius={[8, 8, 8, 8]} barSize={20}>
+            <Bar dataKey="count" radius={[5, 5, 5, 5]} barSize={16}>
               {normalized.map((_, index) => (
                 <Cell key={`cell-${index}`} fill="var(--color-chart-3)" />
               ))}
